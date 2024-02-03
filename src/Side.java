@@ -1,6 +1,6 @@
 import java.awt.Color;
 
-public enum Sides {
+public enum Side {
     WHITE() {
         @Override
         public Color color() {

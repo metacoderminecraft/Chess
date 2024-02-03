@@ -3,9 +3,11 @@ import java.awt.Graphics;
 public class Pawn implements Piece{
     private int x;
     private int y;
+    private Side side;
 
-    public Pawn(int x, int y) {
+    public Pawn(int x, int y, Side side) {
         setPosition(x, y);
+        this.side = side;
     }
 
     @Override
