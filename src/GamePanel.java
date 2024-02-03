@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
+    private final Piece piece = new Pawn(0, 0, Side.WHITE);
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

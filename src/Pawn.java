@@ -30,4 +30,9 @@ public class Pawn implements Piece{
     public void draw(Graphics g) {
         g.fillRect(x * 100, y * 100, 50, 50);
     }
+
+    @Override
+    public Side getSide() {
+        return side;
+    }
 }

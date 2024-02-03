@@ -5,4 +5,5 @@ public interface Piece {
     int getX();
     int getY();
     void draw(Graphics g);
+    Side getSide();
 }
