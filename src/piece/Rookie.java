@@ -12,7 +12,7 @@ public class Rookie implements Piece {
     
     @Override
     public String toString() {
-        return "R";
+        return "R" + side.string();
     }
 
     @Override

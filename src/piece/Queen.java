@@ -12,7 +12,7 @@ public class Queen implements Piece {
 
     @Override
     public String toString() {
-        return "Q";
+        return "Q" + side.string();
     }
 
     @Override

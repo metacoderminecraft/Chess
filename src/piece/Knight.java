@@ -12,7 +12,7 @@ public class Knight implements Piece {
 
     @Override
     public String toString() {
-        return "N";
+        return "N" + side.string();
     }
 
     @Override

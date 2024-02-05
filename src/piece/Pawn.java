@@ -12,7 +12,7 @@ public class Pawn implements Piece {
     
     @Override
     public String toString() {
-        return "P";
+        return "P" + side.string();
     }
 
     @Override
