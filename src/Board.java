@@ -14,8 +14,8 @@ import piece.Side;
 public class Board {
 
     private Piece[][] board = new Piece[8][8];
-    private HashMap<String, Integer> notationConverter;
-    private HashMap<Integer, String> backendConverter;
+    private HashMap<String, Integer> notationConverter = new HashMap<String, Integer>();
+    private HashMap<Integer, String> backendConverter = new HashMap<Integer, String>();
 
     public void print(){
         for (Piece[] i : board) {
