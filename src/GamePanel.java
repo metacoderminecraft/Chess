@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
-    private final Piece piece = new Pawn(0, 0, Side.WHITE);
+    private final Piece piece = new Pawn(0, 0, Side.BLACK);
 
     @Override
     public void paintComponent(Graphics g) {
@@ -17,6 +17,8 @@ public class GamePanel extends JPanel {
                 }
 
                 g.fillRect(column * 100, row * 100, 100, 100);
+                g.setColor(piece.getSide().color());
+                PieceType.PAWN.drawTo(g, column, row);
             }
         }
     }

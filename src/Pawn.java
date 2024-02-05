@@ -1,6 +1,6 @@
 import java.awt.Graphics;
 
-public class Pawn implements Piece{
+public class Pawn implements Piece {
     private int x;
     private int y;
     private Side side;
@@ -24,11 +24,6 @@ public class Pawn implements Piece{
     @Override
     public int getY() {
         return y;
-    }
-
-    @Override
-    public void draw(Graphics g) {
-        g.fillRect(x * 100, y * 100, 50, 50);
     }
 
     @Override
