@@ -2,8 +2,14 @@ package piece;
 public class Knight implements Piece {
     private int x;
     private int y;
-    private Side side;
+    public final Side side;
     
+    public Knight(int startX, int startY, Side startSide){
+        x=startX;
+        y=startY;
+        side=startSide;
+    }
+
     @Override
     public String toString() {
         return "N";

@@ -2,7 +2,13 @@ package piece;
 public class King implements Piece {
     private int x;
     private int y;
-    private Side side;
+    public final Side side;
+
+    public King(int startX, int startY, Side startSide){
+        x=startX;
+        y=startY;
+        side=startSide;
+    }
 
     @Override
     public String toString() {

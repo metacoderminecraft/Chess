@@ -2,7 +2,13 @@ package piece;
 public class Pawn implements Piece {
     private int x;
     private int y;
-    private Side side;
+    public final Side side;
+
+    public Pawn(int startX, int startY, Side startSide){
+        x=startX;
+        y=startY;
+        side=startSide;
+    }
     
     @Override
     public String toString() {
