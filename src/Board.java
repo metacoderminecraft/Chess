@@ -13,12 +13,12 @@ import piece.Side;
 
 public class Board {
 
-    private Piece[][] board = new Piece[8][8];
-    private HashMap<String, Integer> notationConverter = new HashMap<String, Integer>();
-    private HashMap<Integer, String> backendConverter = new HashMap<Integer, String>();
+    private PieceType[][] board = new PieceType[8][8];
+    public final HashMap<String, Integer> notationConverter = new HashMap<String, Integer>();
+    public final HashMap<Integer, String> backendConverter = new HashMap<Integer, String>();
 
     public void print(){
-        for (Piece[] i : board) {
+        for (PieceType[] i : board) {
             System.out.println(Arrays.toString(i));
         }
     }
@@ -41,27 +41,27 @@ public class Board {
         }        
     }
 
-    private static Piece[] pawnRow(Side side, int y) {
-        Piece[] row = new Piece[8];
+    private static PieceType[] pawnRow(Side side, int y) {
+        PieceType[] row = new PieceType[8];
 
         for (int i = 0; i < row.length; i++) {
-            row[i] = new Pawn(i, y, side);
+            row[i] = PieceType.PAWN;
         }
 
         return row;
     }
 
-    private static Piece[] faceRow(Side side, int y) {
-        Piece[] row =  {new Rookie(0, y, side), new Knight(1, y, side), new Bishop(2, y, side), new Queen(3, y, side), new King(4, y, side), new Bishop(5, y, side), new Knight(6, y, side), new Rookie(7, y, side)};
+    private static PieceType[] faceRow(Side side, int y) {
+        PieceType[] row =  {PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
 
         return row;
     }
 
-    private static Piece[] noRow(int y) {
-        Piece[] row = new Piece[8];
+    private static PieceType[] noRow(int y) {
+        PieceType[] row = new PieceType[8];
 
         for (int i = 0; i < row.length; i++) {
-            row[i] = new NoPiece(i, y);
+            row[i] = PieceType.NONE;
         }
 
         return row;

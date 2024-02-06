@@ -10,7 +10,7 @@ public class Main {
         board.print();
 
         Side currentSide = Side.WHITE;
-        System.out.println(currentSide +": Make your move");
+        System.out.println(currentSide + ": Make your move");
         String answer = scanner.nextLine();
         
         while (answer != "quit") {
