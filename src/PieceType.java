@@ -1,3 +1,5 @@
+import piece.Piece;
+
 public enum PieceType {
     KING() {
         @Override
@@ -42,6 +44,6 @@ public enum PieceType {
         }
     };
 
-    public boolean isValid(int x1, int y1, int x2, int y2) {return true;};
+    public boolean isValid(Board.Move move, Board board) {return true;};
     public abstract String toString();
 }
