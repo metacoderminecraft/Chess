@@ -34,24 +34,11 @@ public class Board {
         board[7] = Board.faceRow(Side.WHITE, 7);
 
         //setting up hashmaps
-        notationConverter.put("a", 0);
-        notationConverter.put("b", 1);
-        notationConverter.put("c", 2);
-        notationConverter.put("d", 3);
-        notationConverter.put("e", 4);
-        notationConverter.put("f", 5);
-        notationConverter.put("g", 6);
-        notationConverter.put("h", 7);
-
-        backendConverter.put(0, "a");
-        backendConverter.put(1, "b");
-        backendConverter.put(2, "c");
-        backendConverter.put(3, "d");
-        backendConverter.put(4, "e");
-        backendConverter.put(5, "f");
-        backendConverter.put(6, "g");
-        backendConverter.put(7, "h");
-        
+        final String axisLabel = "abcdefgh"; 
+        for (int i = 0; i < 8; i++){
+            notationConverter.put(""+axisLabel.charAt(i), i);
+            backendConverter.put(i, ""+axisLabel.charAt(i));
+        }        
     }
 
     private static Piece[] pawnRow(Side side, int y) {
