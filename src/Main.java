@@ -19,7 +19,8 @@ public class Main {
                 continue;
             }
 
-
+            Board.Move stuff = moveOf(answer);
+            System.out.println(stuff.startX+ "," + stuff.startY + "," + stuff.endX + "," + stuff.endY + ",");
             board.movePiece(moveOf(answer));
 
             if (currentSide == Side.BLACK) {
@@ -38,7 +39,7 @@ public class Main {
 
     //assumes str follows format of a String where [char, int, char, int]
     public static Board.Move moveOf(String str) {
-        return new Board.Move(letterToNumber(str.charAt(0)), Integer.valueOf(str.charAt(1)), letterToNumber(str.charAt(2)), Integer.valueOf(str.charAt(3)));
+        return new Board.Move(letterToNumber(str.charAt(0)), 8 - Character.getNumericValue(str.charAt(1)), letterToNumber(str.charAt(2)), 8 - Character.getNumericValue(str.charAt(3)));
     }
 
     public static int letterToNumber(char character) {
