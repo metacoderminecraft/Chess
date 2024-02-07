@@ -10,6 +10,7 @@ public enum PieceType {
             return true;
         }
     },
+    
     QUEEN() {
         @Override
         public String toString() {
@@ -21,6 +22,7 @@ public enum PieceType {
             return true;
         }
     },
+
     ROOK() {
         @Override
         public String toString() {
@@ -33,6 +35,7 @@ public enum PieceType {
             return true;
         }
     },
+
     BISHOP() {
         @Override
         public String toString() {
@@ -44,6 +47,7 @@ public enum PieceType {
             return true;
         }
     },
+
     KNIGHT() {
         @Override
         public String toString() {
@@ -55,6 +59,7 @@ public enum PieceType {
             return true;
         }
     },
+
     PAWN() {
         @Override
         public String toString() {
@@ -66,6 +71,7 @@ public enum PieceType {
             return true;
         }
     },
+
     NONE() {
         @Override
         public String toString() {
