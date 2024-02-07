@@ -1,7 +1,7 @@
 import java.util.Arrays;
 
 public class Board {
-    private final PieceType[][] board;
+    private final Piece[][] board;
 
     // new HashMap<Integer, String>();
 
@@ -20,43 +20,43 @@ public class Board {
     }
 
     public void print(){
-        for (PieceType[] i : board) {
+        for (Piece[] i : board) {
             System.out.println(Arrays.toString(i));
         }
     }
 
-    public Board(PieceType[][] board) {
+    public Board(Piece[][] board) {
         this.board = board;
     }
 
-    public static PieceType[] pawnRow(Side side, int y) {
-        PieceType[] row = new PieceType[8];
+    public static Piece[] pawnRow(Side side, int y) {
+        Piece[] row = new Piece[8];
 
         for (int i = 0; i < row.length; i++) {
-            row[i] = PieceType.PAWN;
+            row[i] = new Pawn(side);
         }
 
         return row;
     }
 
-    public static PieceType[] faceRow(Side side, int y) {
-        PieceType[] row =  {PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
+    public static Piece[] faceRow(Side side, int y) {
+        Piece[] row = {new Rook(side), new Knight(side), new Bishop(side), new Queen(side), new King(side), new Bishop(side), new Knight(side), new Rook(side)};
 
         return row;
     }
 
-    public static PieceType[] noRow(int y) {
-        PieceType[] row = new PieceType[8];
+    public static Piece[] noRow(int y) {
+        Piece[] row = new Piece[8];
 
         for (int i = 0; i < row.length; i++) {
-            row[i] = PieceType.NONE;
+            row[i] = new None();
         }
 
         return row;
     }
 
-    public static PieceType[][] startBoard() {
-        final PieceType[][] board = new PieceType[8][8];
+    public static Piece[][] startBoard() {
+        final Piece[][] board = new Piece[8][8];
 
         board[0] = Board.faceRow(Side.BLACK, 0);
         board[1] = Board.pawnRow(Side.BLACK, 1);
@@ -69,15 +69,21 @@ public class Board {
         return board;
     }
 
-    public Board movePiece(Board.Move move) {
-        PieceType piece = board[move.startY][move.startX];
-        PieceType[][] newBoard = board.clone();
+    public Board movePiece(Board.Move move) throws Exception {
+        Piece piece = board[move.startY][move.startX];
+        Piece[][] newBoard = board.clone();
 
         if (piece.isValid(move, new Board(newBoard))) {
             newBoard[move.endY][move.endX] = piece;
-            newBoard[move.startY][move.startX] = PieceType.NONE;
-        };
+            newBoard[move.startY][move.startX] = new None();
+        } else {
+            throw new Exception();
+        }
 
         return new Board(newBoard);
+    }
+
+    public Piece getPiece(int x, int y) {
+        return board[y][x];
     }
 }

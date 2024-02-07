@@ -5,31 +5,32 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         Board board = new Board(Board.startBoard());
-        board.print();
 
         Side currentSide = Side.WHITE;
-        System.out.println(currentSide + ": Make your move");
-        String answer = scanner.nextLine();
+        String answer = "start";
         
         while (!answer.equals("quit")) {
+            board.print();
+            System.out.println(currentSide + ": Make your move");
+            answer = scanner.nextLine();
+
             if (!isValid(answer)) {
                 System.out.println("Error, incorrect notation!");
-                System.out.println(currentSide + ": Make your move");
-                answer = scanner.nextLine();
                 continue;
             }
 
-            Board.Move stuff = moveOf(answer);
-            System.out.println(stuff.startX+ "," + stuff.startY + "," + stuff.endX + "," + stuff.endY + ",");
-            board.movePiece(moveOf(answer));
+            try {
+            board = board.movePiece(moveOf(answer));
+            } catch (Exception e) {
+                System.out.println("Illegal Move!");
+                continue;
+            }
 
             if (currentSide == Side.BLACK) {
                 currentSide = Side.WHITE;
             } else {
                 currentSide = Side.BLACK;
             }
-            System.out.println(currentSide + ": Make your move");
-            answer = scanner.nextLine();
         }
     }
 
