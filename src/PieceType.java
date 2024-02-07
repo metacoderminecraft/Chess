@@ -1,5 +1,3 @@
-import piece.Piece;
-
 public enum PieceType {
     KING() {
         @Override

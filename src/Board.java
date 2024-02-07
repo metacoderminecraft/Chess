@@ -1,15 +1,4 @@
 import java.util.Arrays;
-import java.util.HashMap;
-
-import piece.Bishop;
-import piece.King;
-import piece.Knight;
-import piece.NoPiece;
-import piece.Pawn;
-import piece.Piece;
-import piece.Queen;
-import piece.Rookie;
-import piece.Side;
 
 public class Board {
     private final PieceType[][] board;
