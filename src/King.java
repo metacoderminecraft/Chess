@@ -7,7 +7,11 @@ public class King implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
-        return true;
+        if (board.getPiece(move.endX, move.endY).getSide() == side) {
+            return false;
+        }
+
+        return Math.abs(move.endX - move.startX) <= 1 && (Math.abs(move.endY - move.startY) <= 1);
     }
 
     @Override

@@ -7,7 +7,7 @@ public class Queen implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
-        return true;
+        return new Bishop(side).isValid(move, board) || new Rook(side).isValid(move, board);
     }
 
     @Override

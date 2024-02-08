@@ -69,15 +69,25 @@ public class Board {
         return board;
     }
 
-    public Board movePiece(Board.Move move) throws Exception {
+    public Board movePiece(Board.Move move, Side currentSide) throws Exception {
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoard = board.clone();
+
+        if (board[move.startY][move.startX].getSide() != currentSide) {
+            throw new Exception("Keep your filthy hands off that piece!");
+        }
 
         if (piece.isValid(move, new Board(newBoard))) {
             newBoard[move.endY][move.endX] = piece;
             newBoard[move.startY][move.startX] = new None();
         } else {
-            throw new Exception();
+            throw new Exception("Illegal Move!");
+        }
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                //check checker for checkmate or checking as a checkrer
+            }
         }
 
         return new Board(newBoard);

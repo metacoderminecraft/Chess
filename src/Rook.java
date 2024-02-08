@@ -7,6 +7,29 @@ public class Rook implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
+        if (board.getPiece(move.endX, move.endY).getSide() == side) {
+            return false;
+        }
+        
+        //makes sure one is constant
+        if (!(move.endX - move.startX == 0 || move.endY - move.startY == 0)) {
+            return false;
+        }
+
+        //assuming y is the constant
+        for (int i = Math.min(move.endX, move.startX) + 1; i < Math.max(move.endX, move.startX); i++) {
+            if (!(board.getPiece(i, move.startY) instanceof None)) {
+                return false;
+            }
+        }
+
+        //assuming x is the constant
+        for (int i = Math.min(move.endY, move.startY) + 1; i < Math.max(move.endY, move.startY); i++) {
+            if (!(board.getPiece(move.startX, i) instanceof None)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
