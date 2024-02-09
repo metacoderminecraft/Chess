@@ -15,7 +15,7 @@ public class Bishop implements Piece {
             return false;
         }
 
-        for (int i = Math.min(move.endX, move.startX) + 1, j = Math.min(move.endY, move.startY) + 1; i < Math.max(move.startX, move.endX) && j < Math.max(move.startY, move.endY); i++, j++) {
+        for (int i = move.startX + (int) Math.signum(move.endX - move.startX), j = move.startY + (int) Math.signum(move.endY - move.startY); i != move.endX && j != move.endY; i += Math.signum(move.endX - move.startX), j += Math.signum(move.endY - move.startY)) {
             if (!(board.getPiece(i, j) instanceof None)) {
                 return false;
             }

@@ -1,22 +1,21 @@
 public class Test {
 
-    private static void testNotation() throws Exception {
-        run(Main.isValid("a1a1"), "testNotation");
-        run(!Main.isValid("1111"), "testNotation");
+    private static void testNotation() {
+        assertB(Main.isValid("a2a3"), "testNotation1");
+        assertB(!Main.isValid("1111"), "testNotation2");
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         testNotation();
     }
     
-    public static void run(boolean condition, String tag) throws Exception {
+    public static void assertB(boolean condition, String tag) {
         if (!condition) {
-            System.out.println("Error: " + tag);
-            throw new RuntimeException();
+            throw new RuntimeException("tag");
         }
     }
 
-    public static void run(boolean condition) throws Exception {
+    public static void assertB(boolean condition) throws Exception {
         if (!condition) {
             throw new RuntimeException();
         }

@@ -9,6 +9,9 @@ public class Pawn implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
+        if (board.getPiece(move.endX, move.endY) instanceof King && move.startX == 6 && move.startY == 0) {
+            System.out.println(board.getPiece(move.endX, move.endY));
+        }
         if (board.getPiece(move.endX, move.endY).getSide() == side) {
             return false;
         }

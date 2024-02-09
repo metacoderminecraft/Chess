@@ -3,12 +3,11 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
         Board board = new Board(Board.startBoard());
 
-        Side currentSide = Side.WHITE;
         String answer = "start";
-        
+        Side currentSide = Side.WHITE;
+
         while (!answer.equals("quit")) {
             board.print();
             System.out.println(currentSide + ": Make your move");
@@ -28,11 +27,7 @@ public class Main {
                 continue;
             }
 
-            if (currentSide == Side.BLACK) {
-                currentSide = Side.WHITE;
-            } else {
-                currentSide = Side.BLACK;
-            }
+            currentSide = currentSide == Side.WHITE ? Side.BLACK : Side.WHITE;
         }
         scanner.close();
     }
