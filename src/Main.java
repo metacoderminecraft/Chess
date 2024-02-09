@@ -23,6 +23,11 @@ public class Main {
             try {
             board = board.movePiece(move, currentSide);
             } catch (Exception e) {
+                if (e.getMessage() == "Checkmate!") {
+                    System.out.println(currentSide + " wins!");
+                    break;
+                }
+
                 System.out.println(e);
                 continue;
             }

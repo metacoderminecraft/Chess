@@ -1,3 +1,5 @@
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Board {
@@ -29,10 +31,15 @@ public class Board {
         }
     }
 
-    public void print(){
-        for (Piece[] i : board) {
-            System.out.println(Arrays.toString(i));
+    public void print() {
+        for (int i = 0; i < 20; i++) {
+            System.out.println("\n");
         }
+        for (int i = 0; i < 8; i++) {
+            System.out.println(8-i + " " + Arrays.toString(board[i]));
+        }
+
+        System.out.println("   a   b   c   d   e   f   g   h");
     }
 
     public Board(Piece[][] board) {
@@ -101,8 +108,9 @@ public class Board {
 
         Board newBoard = new Board(newBoardArr);
 
+        Side otherSide = Side.WHITE == currentSide ? Side.BLACK : Side.WHITE;
         Position currKingPos = findKing(currentSide, newBoardArr);
-        Position otherKingPos = findKing(Side.WHITE == currentSide ? Side.BLACK : Side.WHITE, newBoardArr);
+        Position otherKingPos = findKing(otherSide, newBoardArr);
 
         //checking for checks
         for (int i = 0; i < 8; i++) { 
@@ -117,7 +125,11 @@ public class Board {
                 }
 
                 if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), newBoard)) {
-                    System.out.println("AAAAAA it's a CHEEEEEECK!!!!");
+                    if (isCheckMate(otherKingPos, otherSide, newBoardArr)) {
+                        throw new Exception("Checkmate!");
+                    } else {
+                        System.out.println("AAAAAA it's a CHEEEEEECK!!!!");
+                    };
                 } 
             }
         }
@@ -140,18 +152,57 @@ public class Board {
         throw new RuntimeException("King missing!");
     }
 
-    public boolean isCheckMate() {
+    public boolean isCheckMate(Position otherKingPos, Side otherSide, Piece[][] board) {
+        ArrayList<Move> pseudoLegal = new ArrayList<>(); 
+        //Generating pseudo-legal moves
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece piece = board[i][j];
                 for (int i2 = 0; i2 < 8; i2++) {
                     for (int j2 = 0; j2 < 8; j2++) {
-                        if (piece.isValid(new Move(j, i, j2, i2), this)) {
-                            
+                        if (piece.isValid(new Move(j, i, j2, i2), this) && piece.getSide() == otherSide) {
+                            pseudoLegal.add(new Move(j, i, j2, i2));
                         }
                     }
                 }
             }
         }
+
+        Piece[][] newBoardArr = new Piece[8][8];
+        boolean found;
+
+            for (Move move : pseudoLegal) {
+                found = false;
+                //setting up standin board
+                for (int i = 0; i < 8; i++) {
+                    newBoardArr[i] = board[i].clone();
+                }
+
+                //making the move
+                newBoardArr[move.endY][move.endX] = newBoardArr[move.startY][move.startX];
+                newBoardArr[move.startY][move.startX] = new None();
+                new Board(newBoardArr).print();
+                //checking if king is still in check
+                for (int i = 0; i < 8; i++) { 
+                    for (int j = 0; j < 8; j++) {
+                        if (newBoardArr[i][j] instanceof None) {
+                            continue;
+                        }
+
+                        //taking your own king is already not valid, so I don't need to check the piece's side
+                        if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), new Board(newBoardArr))) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        break;
+                    }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
     }
 }
