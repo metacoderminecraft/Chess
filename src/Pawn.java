@@ -1,5 +1,3 @@
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
-
 public class Pawn implements Piece {
     private final Side side;
 

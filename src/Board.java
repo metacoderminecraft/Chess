@@ -1,4 +1,3 @@
-import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -71,6 +70,15 @@ public class Board {
         }
 
         return row;
+    }
+
+    public static Piece[][] noBoard() {
+        Piece[][] sampleBoardArr = new Piece[8][8];
+        for (int i = 0; i < 8; i++) {
+            sampleBoardArr[i] = Board.noRow();
+        }
+
+        return sampleBoardArr;
     }
 
     public static Piece[][] startBoard() {
