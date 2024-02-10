@@ -2,65 +2,27 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        
+        Player player1 = new Human(Side.WHITE);
+        Player player2 = new Human(Side.BLACK);
+        Player currPlayer = player1;
+
+        Board board = new Board(Board.startBoard());
+
+        while(true) {
+            board.print();
+            try {
+                board = board.movePiece(currPlayer.getInput(board), currPlayer.getSide());
+            } catch(Exception e) {
+                if(e.getMessage() == "Checkmate!") {
+                    System.out.println(currPlayer.getSide() + " wins!");
+                    break;
+                }
+
+                System.out.println(e);
+                continue;
+            }
+
+            currPlayer = currPlayer == player1 ? player2 : player1;
+        }
     }
 }
-
-// public class Main {
-//     public static void main(String[] args) {
-//         Scanner scanner = new Scanner(System.in);
-//         Board board = new Board(Board.startBoard());
-
-//         String answer = "start";
-//         Side currentSide = Side.WHITE;
-
-//         while (!answer.equals("quit")) {
-//             board.print();
-//             System.out.println(currentSide + ": Make your move");
-//             answer = scanner.nextLine();
-
-//             if (!isValid(answer)) {
-//                 System.out.println("Error, incorrect notation!");
-//                 continue;
-//             }
-
-//             Board.Move move = moveOf(answer);
-
-//             try {
-//             board = board.movePiece(move, currentSide);
-//             } catch (Exception e) {
-//                 if (e.getMessage() == "Checkmate!") {
-//                     System.out.println(currentSide + " wins!");
-//                     break;
-//                 }
-
-//                 System.out.println(e);
-//                 continue;
-//             }
-
-//             currentSide = currentSide == Side.WHITE ? Side.BLACK : Side.WHITE;
-//         }
-//         scanner.close();
-//     }
-
-//     public static boolean isValid(String answer) {
-//         if (answer.charAt(0) == answer.charAt(2) && answer.charAt(1) == answer.charAt(3)) {
-//             return false;
-//         }
-
-//         return answer.length() == 4 && "abcdefgh".indexOf(answer.charAt(0)) != -1 && "abcdefgh".indexOf(answer.charAt(2)) != -1 && "12345678".indexOf(answer.charAt(1)) != -1 && "12345678".indexOf(answer.charAt(3)) != -1;
-//     }
-
-//     //assumes str follows format of a String where [char, int, char, int] (isValid was called)
-//     public static Board.Move moveOf(String str) {
-//         return new Board.Move(letterToNumber(str.charAt(0)), 8 - Character.getNumericValue(str.charAt(1)), letterToNumber(str.charAt(2)), 8 - Character.getNumericValue(str.charAt(3)));
-//     }
-
-//     public static int letterToNumber(char character) {
-//         return character - 'a';
-//     }
-
-//     public static String numberToLetter(int num) {
-//         return String.valueOf(num);
-//     }
-// }
