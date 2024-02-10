@@ -19,6 +19,10 @@ public class Board {
             this.endX = endX;
             this.endY = endY;
         }
+
+        public void print() {
+            System.out.println(startX + ", " + startY + ", " + endX + ", " + endY);
+        }
     }
 
     public static class Position {
@@ -32,9 +36,6 @@ public class Board {
     }
 
     public void print() {
-        for (int i = 0; i < 20; i++) {
-            System.out.println("\n");
-        }
         for (int i = 0; i < 8; i++) {
             System.out.println(8-i + " " + Arrays.toString(board[i]));
         }
@@ -46,7 +47,7 @@ public class Board {
         this.board = board;
     }
 
-    public static Piece[] pawnRow(Side side, int y) {
+    public static Piece[] pawnRow(Side side) {
         Piece[] row = new Piece[8];
 
         for (int i = 0; i < row.length; i++) {
@@ -56,13 +57,13 @@ public class Board {
         return row;
     }
 
-    public static Piece[] faceRow(Side side, int y) {
+    public static Piece[] faceRow(Side side) {
         Piece[] row = {new Rook(side), new Knight(side), new Bishop(side), new Queen(side), new King(side), new Bishop(side), new Knight(side), new Rook(side)};
 
         return row;
     }
 
-    public static Piece[] noRow(int y) {
+    public static Piece[] noRow() {
         Piece[] row = new Piece[8];
 
         for (int i = 0; i < row.length; i++) {
@@ -75,13 +76,13 @@ public class Board {
     public static Piece[][] startBoard() {
         final Piece[][] board = new Piece[8][8];
 
-        board[0] = Board.faceRow(Side.BLACK, 0);
-        board[1] = Board.pawnRow(Side.BLACK, 1);
+        board[0] = Board.faceRow(Side.BLACK);
+        board[1] = Board.pawnRow(Side.BLACK);
         for (int i = 2; i < 6; i++) {
-            board[i] = Board.noRow(i);
+            board[i] = Board.noRow();
         }
-        board[6] = Board.pawnRow(Side.WHITE, 6);
-        board[7] = Board.faceRow(Side.WHITE, 7);
+        board[6] = Board.pawnRow(Side.WHITE);
+        board[7] = Board.faceRow(Side.WHITE);
 
         return board;
     }
@@ -125,7 +126,7 @@ public class Board {
                 }
 
                 if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), newBoard)) {
-                    if (isCheckMate(otherKingPos, otherSide, newBoardArr)) {
+                    if (isCheckMate(otherSide, newBoardArr)) {
                         throw new Exception("Checkmate!");
                     } else {
                         System.out.println("AAAAAA it's a CHEEEEEECK!!!!");
@@ -152,7 +153,7 @@ public class Board {
         throw new RuntimeException("King missing!");
     }
 
-    public boolean isCheckMate(Position otherKingPos, Side otherSide, Piece[][] board) {
+    public boolean isCheckMate(Side otherSide, Piece[][] board) {
         ArrayList<Move> pseudoLegal = new ArrayList<>(); 
         //Generating pseudo-legal moves
         for (int i = 0; i < 8; i++) {
@@ -181,7 +182,10 @@ public class Board {
                 //making the move
                 newBoardArr[move.endY][move.endX] = newBoardArr[move.startY][move.startX];
                 newBoardArr[move.startY][move.startX] = new None();
-                new Board(newBoardArr).print();
+
+                Position otherKingPos = null;
+                try {otherKingPos = findKing(otherSide, newBoardArr);} catch(Exception e) {System.out.println(e);}
+                
                 //checking if king is still in check
                 for (int i = 0; i < 8; i++) { 
                     for (int j = 0; j < 8; j++) {
