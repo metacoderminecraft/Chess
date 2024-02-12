@@ -9,6 +9,11 @@ public class Human implements Player {
     }
 
     @Override
+    public String toString() {
+        return side.toString();
+    }
+
+    @Override
     public Side getSide() {
         return side;
     }
@@ -19,9 +24,14 @@ public class Human implements Player {
         System.out.println(side + ": Make your move");
         answer = scanner.nextLine();
 
-        while (!isValid(answer)) {
-            System.out.println("Error, incorrect notation!");
-            board.print();              
+        while (!(isValid(answer) && board.isValid(moveOf(answer), side))) {
+            if (!board.isValid(moveOf(answer), side)) {
+                System.out.println("Illegal Move!");
+            } else {
+                System.out.println("Error, incorrect notation!");
+            }
+            board.print();   
+            answer = scanner.nextLine();           
         }
         
         return moveOf(answer);

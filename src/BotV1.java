@@ -6,6 +6,11 @@ public class BotV1 implements Player {
     }
 
     @Override
+    public String toString() {
+        return side.toString();
+    }
+
+    @Override
     public Side getSide() {
         return side;
     }

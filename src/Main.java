@@ -5,22 +5,21 @@ public class Main {
         Player currPlayer = player1;
 
         Board board = new Board(Board.startBoard());
+        board.print();
 
         while(true) {
+            Player otherPlayer = currPlayer == player1 ? player2 : player1;
+            board = board.movePiece(currPlayer.getInput(board), currPlayer.getSide());
             board.print();
-            try {
-                board = board.movePiece(currPlayer.getInput(board), currPlayer.getSide());
-            } catch(Exception e) {
-                if(e.getMessage() == "Checkmate!") {
-                    System.out.println(currPlayer.getSide() + " wins!");
-                    break;
-                }
 
-                System.out.println(e);
-                continue;
-            }
-
-            currPlayer = currPlayer == player1 ? player2 : player1;
+            if(board.isCheckMate(otherPlayer.getSide())) {
+                System.out.println(currPlayer + " is the GOAT!");
+                break;
+            } else if(board.isCheck(otherPlayer.getSide())) {
+                System.out.println("AAAAAAAAAAAAAAAAAAAAA CHEEEEEEEEEEECK!!!!!!!");
+            } 
+                
+            currPlayer = otherPlayer;
         }
     }
 }
