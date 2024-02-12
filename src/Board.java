@@ -144,21 +144,26 @@ public class Board {
         return false;
     }
 
-    public boolean isCheckMate(Side otherSide) {
+    public ArrayList<Move> pseudoLegal(Side side) {
         ArrayList<Move> pseudoLegal = new ArrayList<>(); 
-        //Generating pseudo-legal moves
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece piece = board[i][j];
                 for (int i2 = 0; i2 < 8; i2++) {
                     for (int j2 = 0; j2 < 8; j2++) {
-                        if (piece.isValid(new Move(j, i, j2, i2), this) && piece.getSide() == otherSide) {
+                        if (piece.isValid(new Move(j, i, j2, i2), this) && piece.getSide() == side) {
                             pseudoLegal.add(new Move(j, i, j2, i2));
                         }
                     }
                 }
             }
         }
+
+        return pseudoLegal;
+    }
+
+    public boolean isCheckMate(Side otherSide) {
+        ArrayList<Move> pseudoLegal = pseudoLegal(otherSide);
 
         Piece[][] newBoardArr = new Piece[8][8];
         boolean found;
@@ -174,27 +179,11 @@ public class Board {
                 newBoardArr[move.endY][move.endX] = newBoardArr[move.startY][move.startX];
                 newBoardArr[move.startY][move.startX] = new None();
                 Board newBoard = new Board(newBoardArr);
-
-                Position otherKingPos = null;
-                otherKingPos = newBoard.findKing(otherSide);
                 
-                //checking if king is still in check
-                for (int i = 0; i < 8; i++) { 
-                    for (int j = 0; j < 8; j++) {
-                        if (newBoardArr[i][j] instanceof None) {
-                            continue;
-                        }
-
-                        //taking your own king is already not valid, so I don't need to check the piece's side
-                        if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), newBoard)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) {
-                        break;
-                    }
-            }
+                if (newBoard.isCheck(otherSide)) {
+                    found = true;
+                    break;
+                }
             if (!found) {
                 return false;
             }
@@ -224,15 +213,10 @@ public class Board {
         newBoardArr[move.startY][move.startX] = new None();
 
         Board newBoard = new Board(newBoardArr);
-        Position currKingPos = newBoard.findKing(currentSide);
 
-        for (int i = 0; i < 8; i++) { 
-            for (int j = 0; j < 8; j++) {
-                if (newBoardArr[i][j].isValid(new Move(j, i, currKingPos.x, currKingPos.y), newBoard)) {
-                    return false;
-                }
-            }
-        }
+        if (newBoard.isCheck(currentSide)) {
+            return false;
+        };
 
         return true;
     }

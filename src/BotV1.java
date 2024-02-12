@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class BotV1 implements Player {
     public final Side side;
 
@@ -18,5 +20,13 @@ public class BotV1 implements Player {
     @Override
     public Board.Move getInput(Board board) {
         return null;
+    }
+
+    public static ArrayList<Board.Move> legalMoves(Board board, Side side) {
+        ArrayList<Board.Move> legalMoves = board.pseudoLegal(side);
+        for (int i = 0; i < legalMoves.size(); i++) {
+            //ill finish this later
+            Board newBoard = new Board
+        }
     }
 }
