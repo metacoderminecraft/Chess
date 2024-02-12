@@ -95,53 +95,16 @@ public class Board {
         return board;
     }
 
-    public Board movePiece(Board.Move move, Side currentSide) throws Exception {
+    public Board movePiece(Board.Move move, Side currentSide) {
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoardArr = new Piece[8][8];
 
-        //How does java not have a deep copy method
         for (int i = 0; i < 8; i++) {
             newBoardArr[i] = board[i].clone();
         }
 
-        if (board[move.startY][move.startX].getSide() != currentSide) {
-            throw new Exception("Keep your filthy hands off that piece!");
-        }
-
-        if (piece.isValid(move, this)) {
-            newBoardArr[move.endY][move.endX] = piece;
-            newBoardArr[move.startY][move.startX] = new None();
-        } else {
-            throw new Exception("Illegal Move!");
-        }
-
-        Board newBoard = new Board(newBoardArr);
-
-        Side otherSide = Side.WHITE == currentSide ? Side.BLACK : Side.WHITE;
-        Position currKingPos = findKing(currentSide, newBoardArr);
-        Position otherKingPos = findKing(otherSide, newBoardArr);
-
-        //checking for checks
-        for (int i = 0; i < 8; i++) { 
-            for (int j = 0; j < 8; j++) {
-                if (newBoardArr[i][j] instanceof None) {
-                    continue;
-                }
-
-                //taking your own king is already not valid, so I don't need to check the piece's side
-                if (newBoardArr[i][j].isValid(new Move(j, i, currKingPos.x, currKingPos.y), newBoard)) {
-                    throw new Exception("Illegal Move!!");
-                }
-
-                if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), newBoard)) {
-                    if (isCheckMate(otherSide, newBoardArr)) {
-                        throw new Exception("Checkmate!");
-                    } else {
-                        System.out.println("AAAAAA it's a CHEEEEEECK!!!!");
-                    };
-                } 
-            }
-        }
+        newBoardArr[move.endY][move.endX] = piece;
+        newBoardArr[move.startY][move.startX] = new None();
 
         return new Board(newBoardArr);
     }
@@ -150,7 +113,7 @@ public class Board {
         return board[y][x];
     }
 
-    public static Position findKing(Side side, Piece[][] board) throws Exception {
+    public Position findKing(Side side) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] instanceof King && board[i][j].getSide() == side) {
@@ -161,7 +124,20 @@ public class Board {
         throw new RuntimeException("King missing!");
     }
 
-    public boolean isCheckMate(Side otherSide, Piece[][] board) {
+    public boolean isCheck(Side otherSide) {
+        Position otherKingPos = findKing(otherSide);
+
+        for (int i = 0; i < 8; i++) { 
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), this)) {
+                        return true;
+                } 
+            }
+        }
+        return false;
+    }
+
+    public boolean isCheckMate(Side otherSide) {
         ArrayList<Move> pseudoLegal = new ArrayList<>(); 
         //Generating pseudo-legal moves
         for (int i = 0; i < 8; i++) {
@@ -190,9 +166,10 @@ public class Board {
                 //making the move
                 newBoardArr[move.endY][move.endX] = newBoardArr[move.startY][move.startX];
                 newBoardArr[move.startY][move.startX] = new None();
+                Board newBoard = new Board(newBoardArr);
 
                 Position otherKingPos = null;
-                try {otherKingPos = findKing(otherSide, newBoardArr);} catch(Exception e) {System.out.println(e);}
+                otherKingPos = newBoard.findKing(otherSide);
                 
                 //checking if king is still in check
                 for (int i = 0; i < 8; i++) { 
@@ -202,7 +179,7 @@ public class Board {
                         }
 
                         //taking your own king is already not valid, so I don't need to check the piece's side
-                        if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), new Board(newBoardArr))) {
+                        if (newBoardArr[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), newBoard)) {
                             found = true;
                             break;
                         }
@@ -215,6 +192,41 @@ public class Board {
                 return false;
             }
         }
+        return true;
+    }
+
+    public boolean isValid(Move move, Side currentSide) {
+        Piece piece = board[move.startY][move.startX];
+        Piece[][] newBoardArr = new Piece[8][8];
+
+        //How does java not have a deep copy method
+        for (int i = 0; i < 8; i++) {
+            newBoardArr[i] = board[i].clone();
+        }
+
+        if (board[move.startY][move.startX].getSide() != currentSide) {
+            return false;
+        }
+
+        if(!piece.isValid(move, this)) {
+            return false;
+        }
+
+        //staging the move
+        newBoardArr[move.endY][move.endX] = piece;
+        newBoardArr[move.startY][move.startX] = new None();
+
+        Board newBoard = new Board(newBoardArr);
+        Position currKingPos = newBoard.findKing(currentSide);
+
+        for (int i = 0; i < 8; i++) { 
+            for (int j = 0; j < 8; j++) {
+                if (newBoardArr[i][j].isValid(new Move(j, i, currKingPos.x, currKingPos.y), newBoard)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 }
