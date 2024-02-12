@@ -20,15 +20,18 @@ public class Human implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        String answer = "start";
         System.out.println(side + ": Make your move");
-        answer = scanner.nextLine();
+        String answer = scanner.nextLine();
 
-        while (!(isValid(answer) && board.isValid(moveOf(answer), side))) {
-            if (!board.isValid(moveOf(answer), side)) {
-                System.out.println("Illegal Move!");
+        while (true) {
+            if (isValid(answer)) {
+                if (board.isValid(moveOf(answer), side)) {
+                    break;
+                } else {
+                    System.out.println("Illegal Move!");
+                }
             } else {
-                System.out.println("Error, incorrect notation!");
+                System.out.println("Incorrect notation!");
             }
             board.print();   
             answer = scanner.nextLine();           
@@ -38,11 +41,14 @@ public class Human implements Player {
     }
 
     public static boolean isValid(String answer) {
-    if (answer.charAt(0) == answer.charAt(2) && answer.charAt(1) == answer.charAt(3)) {
-        return false;
-    }
+        if (answer.length() != 4) {
+            return false;
+        }
+        if (answer.charAt(0) == answer.charAt(2) && answer.charAt(1) == answer.charAt(3)) {
+            return false;
+        }
 
-    return answer.length() == 4 && "abcdefgh".indexOf(answer.charAt(0)) != -1 && "abcdefgh".indexOf(answer.charAt(2)) != -1 && "12345678".indexOf(answer.charAt(1)) != -1 && "12345678".indexOf(answer.charAt(3)) != -1;
+        return answer.length() == 4 && "abcdefgh".indexOf(answer.charAt(0)) != -1 && "abcdefgh".indexOf(answer.charAt(2)) != -1 && "12345678".indexOf(answer.charAt(1)) != -1 && "12345678".indexOf(answer.charAt(3)) != -1;
     }
 
     //assumes str follows format of a String where [char, int, char, int] (isValid was called)
