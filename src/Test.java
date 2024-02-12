@@ -6,16 +6,25 @@ public class Test {
         pawnMove();
         knightMove();
         rookMove();
-        queenMove();
         kingMove();
         bishopMove();
 
+    }
+
+    public static Board assertMove(Board.Move move, Side side, String tag, Board board) {
+        assertB(board.isValid(move, side), tag);
+        return board.movePiece(move, side);
     }
     
     public static void assertB(boolean condition, String tag) {
         if (!condition) {
             throw new RuntimeException(tag);
         }
+    }
+
+    public static Board assertMove(Board.Move move, Side side, Board board) {
+        assertB(board.isValid(move, side));
+        return board.movePiece(move, side);
     }
 
     public static void assertB(boolean condition)  {
@@ -48,33 +57,41 @@ public class Test {
 
     private static void kingMove() {
         Board board = new Board(Board.startBoard());
-    }
 
-    private static void queenMove() {
-        Board board = new Board(Board.startBoard());
+        board = assertMove(Human.moveOf("e2e3"), Side.WHITE, board);
+        assertB(board.isValid(Human.moveOf("e1e2"), Side.WHITE));
+        assertB(!board.isValid(Human.moveOf("e1e3"), Side.WHITE));
     }
 
     private static void rookMove() {
         Board board = new Board(Board.startBoard());
+
+        board = assertMove(Human.moveOf("a7a5"), Side.BLACK, board);
+        assertB(board.isValid(Human.moveOf("a8a6"), Side.BLACK));
     }
 
     private static void bishopMove() {
         Board board = new Board(Board.startBoard());
+
+        board = assertMove(Human.moveOf("e2e4"), Side.WHITE, board);
+        assertB(board.isValid(Human.moveOf("f1b5"), Side.WHITE));
     }
 
     private static void knightMove() {
         Board board = new Board(Board.startBoard());
+
+        assertB(board.isValid(Human.moveOf("g8f6"), Side.BLACK));
+        board = assertMove(Human.moveOf("d2d4"), Side.WHITE, board);
+        assertB(board.isValid(Human.moveOf("b1d2"), Side.WHITE));
     }
 
     private static void pawnMove() {
         Board board = new Board(Board.startBoard());
 
-        assertB(board.isValid(Human.moveOf("a7a5"), Side.BLACK));
-        assertB(board.isValid(Human.moveOf("a2a4"), Side.WHITE));
-        board = board.movePiece(Human.moveOf("a7a5"), Side.BLACK);
-        board = board.movePiece(Human.moveOf("a2a4"), Side.WHITE);
+        board = assertMove(Human.moveOf("a7a5"), Side.BLACK, board);
+        board = assertMove(Human.moveOf("a2a4"), Side.WHITE, board);
         assertB(!board.isValid(Human.moveOf("a5a4"), Side.BLACK));
-        board = board.movePiece(Human.moveOf("b2b4"), Side.WHITE);
+        board = assertMove(Human.moveOf("b2b4"), Side.WHITE, board);
         assertB(board.isValid(Human.moveOf("a5b4"), Side.BLACK));
     }
 }
