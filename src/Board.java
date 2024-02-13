@@ -160,40 +160,6 @@ public class Board {
         return legalMoves;
     }
 
-    public boolean isCheckMate(Side otherSide) {
-        ArrayList<Move> legalMoves = legalMoves(otherSide);
-
-        Piece[][] newBoardArr = new Piece[8][8];
-        boolean found;
-        
-        if(!isCheck(otherSide)) {
-            return false;
-        }
-
-            for (Move move : legalMoves) {
-                found = false;
-                //setting up standin board
-                for (int i = 0; i < 8; i++) {
-                    newBoardArr[i] = board[i].clone();
-                }
-
-                //making the move
-                newBoardArr[move.endY][move.endX] = newBoardArr[move.startY][move.startX];
-                newBoardArr[move.startY][move.startX] = new None();
-                Board newBoard = new Board(newBoardArr);
-                
-                if (newBoard.isCheck(otherSide)) {
-                    found = true;
-                    break;
-                }
-
-            if (!found) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean isValid(Move move, Side currentSide) {
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoardArr = new Piece[8][8];

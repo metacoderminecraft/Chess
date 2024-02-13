@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Main {
     public static void main(String[] args) {
         Player player1 = new Human(Side.WHITE);
@@ -19,7 +17,7 @@ public class Main {
             // for (int i = 0; i < board.legalMoves(otherPlayer.getSide()).size(); i++) {
             //     board.legalMoves(otherPlayer.getSide()).get(i).print();
             // }
-            if(board.isCheckMate(otherPlayer.getSide())) {
+            if(board.legalMoves(otherPlayer.getSide()).size() == 0 && board.isCheck(otherPlayer.getSide())) {
                 System.out.println(currPlayer + " is the GOAT!");
                 break;
             } else if(board.isCheck(otherPlayer.getSide())) {

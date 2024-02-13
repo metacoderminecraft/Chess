@@ -52,7 +52,7 @@ public class Test {
         sampleBoardArr[1][1] = new Queen(Side.WHITE);
         sampleBoardArr[7][7] = new King(Side.WHITE);
         Board board = new Board(sampleBoardArr);
-        assertB(!board.isCheckMate(Side.BLACK));
+        assertB(board.legalMoves(Side.BLACK).size() != 0);
     }
 
     private static void kingMove() {
