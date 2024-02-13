@@ -13,10 +13,6 @@ public class Main {
             board = board.movePiece(currPlayer.getInput(board), currPlayer.getSide());
             board.print();
 
-
-            // for (int i = 0; i < board.legalMoves(otherPlayer.getSide()).size(); i++) {
-            //     board.legalMoves(otherPlayer.getSide()).get(i).print();
-            // }
             if(board.legalMoves(otherPlayer.getSide()).size() == 0 && board.isCheck(otherPlayer.getSide())) {
                 System.out.println(currPlayer + " is the GOAT!");
                 break;

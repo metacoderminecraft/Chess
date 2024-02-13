@@ -1,3 +1,4 @@
+import java.time.Period;
 import java.util.ArrayList;
 
 public class Board {
@@ -20,6 +21,30 @@ public class Board {
 
         public void print() {
             System.out.println(startX + ", " + startY + ", " + endX + ", " + endY);
+        }
+
+        public PieceSupplier getEndPiece(Board board) {
+            return (idc) -> board.getPiece(startX, startY);
+        }
+    }
+
+    public static class Promotion extends Move {
+        public final PieceSupplier promotionPiece;
+
+        public Promotion(int startX, int startY, int endX, int endY, PieceSupplier promotionPiece) {
+            super(startX, startY, endX, endY);
+            this.promotionPiece = promotionPiece;
+            
+        }
+
+        @Override
+        public PieceSupplier getEndPiece(Board board) {
+            return promotionPiece;
+        }
+
+        @Override
+        public void print() {
+            System.out.println(startX + ", " + startY + ", " + endX + ", " + endY + ", " + promotionPiece);
         }
     }
 
@@ -102,14 +127,14 @@ public class Board {
     }
 
     public Board movePiece(Board.Move move, Side currentSide) {
-        Piece piece = board[move.startY][move.startX];
+        Piece endPiece = move.getEndPiece(this).accept(currentSide);
         Piece[][] newBoardArr = new Piece[8][8];
 
         for (int i = 0; i < 8; i++) {
             newBoardArr[i] = board[i].clone();
         }
 
-        newBoardArr[move.endY][move.endX] = piece;
+        newBoardArr[move.endY][move.endX] = endPiece;
         newBoardArr[move.startY][move.startX] = new None();
 
         return new Board(newBoardArr);
@@ -161,6 +186,18 @@ public class Board {
     }
 
     public boolean isValid(Move move, Side currentSide) {
+        if (move instanceof Promotion && move.getEndPiece(this) != null) {
+            if (!(getPiece(move.startX, move.startY) instanceof Pawn && move.startY == 1) && currentSide == Side.WHITE || !(getPiece(move.startX, move.startY) instanceof Pawn && move.startY== 6) && currentSide == Side.BLACK) {
+                return false;
+            }
+
+            return isValid(new Promotion(move.startX, move.startY, move.endX, move.endY, null), currentSide);
+        } else if (!(move instanceof Promotion)) {
+            if (move.startY == 1 && currentSide == Side.WHITE || move.startY== 6 && currentSide == Side.BLACK) {
+                return false;
+            }
+        }
+
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoardArr = new Piece[8][8];
 

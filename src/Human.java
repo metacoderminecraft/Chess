@@ -41,6 +41,10 @@ public class Human implements Player {
     }
 
     public static boolean isValid(String answer) {
+        if(answer.length() == 5) {
+            return isValid(answer.substring(0,4)) && "QRBN".indexOf(answer.substring(4)) != -1;
+        }
+
         if (answer.length() != 4) {
             return false;
         }
@@ -53,6 +57,29 @@ public class Human implements Player {
 
     //assumes str follows format of a String where [char, int, char, int] (isValid was called)
     public static Board.Move moveOf(String str) {
+        if (str.length() == 5) {
+            Board.Move subMove = moveOf(str.substring(0, 4));
+            PieceSupplier promotionPiece;
+            switch(str.substring(4)) {
+                case "Q":
+                    promotionPiece = (side) -> new Queen(side);
+                    break;
+                case "R":
+                    promotionPiece = (side) -> new Rook(side);
+                    break;
+                case "B":
+                    promotionPiece = (side) -> new Bishop(side);
+                    break;
+                case "N":
+                    promotionPiece = (side) -> new Knight(side);
+                    break;
+                default:
+                    throw new RuntimeException("is valid no worky");
+            }
+            
+            return new Board.Promotion(subMove.startX, subMove.startY, subMove.endX, subMove.endY, promotionPiece);
+        }
+
         return new Board.Move(letterToNumber(str.charAt(0)), 8 - Character.getNumericValue(str.charAt(1)), letterToNumber(str.charAt(2)), 8 - Character.getNumericValue(str.charAt(3)));
     }
 
