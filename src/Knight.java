@@ -14,6 +14,10 @@ public class Knight implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
+        if (move instanceof Board.Promotion) {
+            return false;
+        }
+
         if (board.getPiece(move.endX, move.endY).getSide() == side) {
             return false;
         }

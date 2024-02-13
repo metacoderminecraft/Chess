@@ -14,6 +14,18 @@ public class Pawn implements Piece {
 
     @Override
     public boolean isValid(Board.Move move, Board board) {
+        if (move instanceof Board.Promotion && move.getEndPiece(board) != null) {
+            if (!(board.getPiece(move.startX, move.startY) instanceof Pawn && move.startY == 1) && side == Side.WHITE || !(board.getPiece(move.startX, move.startY) instanceof Pawn && move.startY== 6) && side == Side.BLACK) {
+                return false;
+            }
+
+            return isValid(new Board.Promotion(move.startX, move.startY, move.endX, move.endY, null), board);
+        } else if (!(move instanceof Board.Promotion)) {
+            if (move.startY == 1 && side == Side.WHITE || move.startY== 6 && side == Side.BLACK) {
+                return false;
+            }
+        }
+
         if (board.getPiece(move.endX, move.endY) instanceof King && move.startX == 6 && move.startY == 0) {
             System.out.println(board.getPiece(move.endX, move.endY));
         }

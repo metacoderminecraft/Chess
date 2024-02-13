@@ -44,7 +44,7 @@ public class Board {
 
         @Override
         public void print() {
-            System.out.println(startX + ", " + startY + ", " + endX + ", " + endY + ", " + promotionPiece);
+            System.out.println(startX + ", " + startY + ", " + endX + ", " + endY + ", " + promotionPiece.accept(Side.BLACK));
         }
     }
 
@@ -163,6 +163,9 @@ public class Board {
                 if (board[i][j].isValid(new Move(j, i, otherKingPos.x, otherKingPos.y), this)) {
                         return true;
                 } 
+                if (board[i][j].isValid(new Board.Promotion(j, i, otherKingPos.x, otherKingPos.y, s -> new None()), this)) {
+                    return true;
+                };
             }
         }
         return false;
@@ -193,18 +196,10 @@ public class Board {
     }
 
     public boolean isValid(Move move, Side currentSide) {
-        if (move instanceof Promotion && move.getEndPiece(this) != null) {
-            if (!(getPiece(move.startX, move.startY) instanceof Pawn && move.startY == 1) && currentSide == Side.WHITE || !(getPiece(move.startX, move.startY) instanceof Pawn && move.startY== 6) && currentSide == Side.BLACK) {
-                return false;
-            }
+        //castling
+        
 
-            return isValid(new Promotion(move.startX, move.startY, move.endX, move.endY, null), currentSide);
-        } else if (!(move instanceof Promotion)) {
-            if (move.startY == 1 && currentSide == Side.WHITE || move.startY== 6 && currentSide == Side.BLACK) {
-                return false;
-            }
-        }
-
+        //regular moves
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoardArr = new Piece[8][8];
 
