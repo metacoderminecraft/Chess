@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Board {
     private final Piece[][] board;
@@ -144,31 +143,30 @@ public class Board {
         return false;
     }
 
-    public ArrayList<Move> pseudoLegal(Side side) {
-        ArrayList<Move> pseudoLegal = new ArrayList<>(); 
+    public ArrayList<Move> legalMoves(Side side) {
+        ArrayList<Move> legalMoves = new ArrayList<>(); 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                Piece piece = board[i][j];
                 for (int i2 = 0; i2 < 8; i2++) {
                     for (int j2 = 0; j2 < 8; j2++) {
-                        if (piece.isValid(new Move(j, i, j2, i2), this) && piece.getSide() == side) {
-                            pseudoLegal.add(new Move(j, i, j2, i2));
+                        if (isValid(new Move(j, i, j2, i2), side)) {
+                            legalMoves.add(new Move(j, i, j2, i2));
                         }
                     }
                 }
             }
         }
 
-        return pseudoLegal;
+        return legalMoves;
     }
 
     public boolean isCheckMate(Side otherSide) {
-        ArrayList<Move> pseudoLegal = pseudoLegal(otherSide);
+        ArrayList<Move> legalMoves = legalMoves(otherSide);
 
         Piece[][] newBoardArr = new Piece[8][8];
         boolean found;
 
-            for (Move move : pseudoLegal) {
+            for (Move move : legalMoves) {
                 found = false;
                 //setting up standin board
                 for (int i = 0; i < 8; i++) {
@@ -184,6 +182,7 @@ public class Board {
                     found = true;
                     break;
                 }
+
             if (!found) {
                 return false;
             }
