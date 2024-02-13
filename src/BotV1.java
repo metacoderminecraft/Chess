@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BotV1 implements Player {
     public final Side side;
@@ -19,6 +20,9 @@ public class BotV1 implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        return null;
+        ArrayList<Board.Move> legalMoves = board.legalMoves(side);
+        Random rand = new Random();
+
+        return legalMoves.get(rand.nextInt(legalMoves.size()));
     }
 }

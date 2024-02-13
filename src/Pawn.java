@@ -15,11 +15,11 @@ public class Pawn implements Piece {
         }
         
         if (move.endY - move.startY != 1 && side == Side.BLACK) {
-            if (!(move.endY - move.startY == 2 && move.startY == 1)) {
+            if (!(move.endY - move.startY == 2 && move.startY == 1 && board.getPiece(move.startX, 2) instanceof None)) {
                 return false;
             }
         } else if (move.endY - move.startY != -1 && side == Side.WHITE) {
-            if (!(move.endY - move.startY == -2 && move.startY == 6)) {
+            if (!(move.endY - move.startY == -2 && move.startY == 6 && board.getPiece(move.startX, 5) instanceof None)) {
             return false;
             }
         }

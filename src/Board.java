@@ -165,6 +165,10 @@ public class Board {
 
         Piece[][] newBoardArr = new Piece[8][8];
         boolean found;
+        
+        if(!isCheck(otherSide)) {
+            return false;
+        }
 
             for (Move move : legalMoves) {
                 found = false;
