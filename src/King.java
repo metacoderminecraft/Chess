@@ -1,8 +1,15 @@
 public class King implements Piece {
     private final Side side;
+    public final boolean hasMoved;
 
     public King(Side side) {
         this.side = side;
+        this.hasMoved = true;
+    }
+
+    public King(Side side, Boolean hasMoved) {
+        this.side = side;
+        this.hasMoved = hasMoved;
     }
 
     @Override
@@ -22,5 +29,10 @@ public class King implements Piece {
     @Override
     public Side getSide() {
         return side;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return hasMoved;
     }
 }

@@ -1,8 +1,15 @@
 public class Pawn implements Piece {
     private final Side side;
+    public final boolean hasMoved;
 
     public Pawn(Side side) {
         this.side = side;
+        this.hasMoved = true;
+    }
+
+    public Pawn(Side side, Boolean hasMoved) {
+        this.side = side;
+        this.hasMoved = hasMoved;
     }
 
     @Override
@@ -41,5 +48,10 @@ public class Pawn implements Piece {
     @Override
     public Side getSide() {
         return side;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return hasMoved;
     }
 }

@@ -13,4 +13,9 @@ public class None implements Piece {
     public Side getSide() {
         return null;
     }
+
+    @Override
+    public boolean hasMoved() {
+        return false;
+    }
 }

@@ -81,14 +81,14 @@ public class Board {
         Piece[] row = new Piece[8];
 
         for (int i = 0; i < row.length; i++) {
-            row[i] = new Pawn(side);
+            row[i] = new Pawn(side, false);
         }
 
         return row;
     }
 
     public static Piece[] faceRow(Side side) {
-        Piece[] row = {new Rook(side), new Knight(side), new Bishop(side), new Queen(side), new King(side), new Bishop(side), new Knight(side), new Rook(side)};
+        Piece[] row = {new Rook(side, false), new Knight(side, false), new Bishop(side, false), new Queen(side, false), new King(side, false), new Bishop(side, false), new Knight(side, false), new Rook(side, false)};
 
         return row;
     }

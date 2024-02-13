@@ -1,8 +1,15 @@
 public class Rook implements Piece {
     private final Side side;
+    public final boolean hasMoved;
 
     public Rook(Side side) {
         this.side = side;
+        this.hasMoved = true;
+    }
+
+    public Rook(Side side, Boolean hasMoved) {
+        this.side = side;
+        this.hasMoved = hasMoved;
     }
 
     @Override
@@ -41,5 +48,10 @@ public class Rook implements Piece {
     @Override
     public Side getSide() {
         return side;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return hasMoved;
     }
 }
