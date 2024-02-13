@@ -1,4 +1,3 @@
-import java.time.Period;
 import java.util.ArrayList;
 
 public class Board {
@@ -137,6 +136,20 @@ public class Board {
         newBoardArr[move.endY][move.endX] = endPiece;
         newBoardArr[move.startY][move.startX] = new None();
 
+        if (getPiece(move.startX, move.startY) instanceof King && !getPiece(move.startX, move.startY).hasMoved() && move.endY - move.startY == 0 && Math.abs(move.endX - move.startX) == 2) {
+            //kingside
+            if (move.endX > move.startX) {
+                newBoardArr[move.startY][move.startX + 1] = new Rook(currentSide);
+                newBoardArr[move.startY][7] = new None();
+            }
+
+            //queenside
+            if (move.startX > move.endX) {
+                newBoardArr[move.startY][move.startX - 1] = new Rook(currentSide);
+                newBoardArr[move.startY][0] = new None();
+            }
+        }
+
         return new Board(newBoardArr);
     }
 
@@ -196,10 +209,13 @@ public class Board {
     }
 
     public boolean isValid(Move move, Side currentSide) {
-        //castling
-        
+        if (getPiece(move.startX, move.startY) instanceof King && !getPiece(move.startX, move.startY).hasMoved() && move.endY - move.startY == 0 && Math.abs(move.endX - move.startX) == 2) {
+            if (castleValid(move, currentSide)) {
+                return true;
+            }
+            return false;
+        }
 
-        //regular moves
         Piece piece = board[move.startY][move.startX];
         Piece[][] newBoardArr = new Piece[8][8];
 
@@ -227,5 +243,59 @@ public class Board {
         };
 
         return true;
+    }
+
+    public boolean castleValid(Move move, Side currentSide) {
+        Piece[][] newBoardArr = new Piece[8][8];
+
+        for (int i = 0; i < 8; i++) {
+            newBoardArr[i] = board[i].clone();
+        }
+
+        if (isCheck(currentSide) || getPiece(move.startX, move.startY).hasMoved()) {
+            return false;
+        }
+
+        //Kingside
+        if (move.endX > move.startX) {
+
+            if (getPiece(7, move.startY) instanceof Rook && !getPiece(7, move.startY).hasMoved() && getPiece(7, move.startY).isValid(new Move(7, move.startY, 5, move.startY), this)) {
+                if (!getPiece(move.startX, move.startY).isValid(new Move(move.startX, move.startY, move.startX + 1, move.startY), this)) {
+                    return false;
+                }
+                newBoardArr[move.startY][move.startX + 1] = new King(currentSide);
+                newBoardArr[move.startY][move.startX] = new None();
+                Board newBoard = new Board(newBoardArr);
+                if (!newBoard.getPiece(move.startX + 1, move.startY).isValid(new Move(move.startX + 1, move.startY, move.endX, move.endY), newBoard)) {
+                    return false;
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        //Queenside
+        else if (move.startX > move.endX) {
+
+            if (getPiece(0, move.startY) instanceof Rook && !getPiece(0, move.startY).hasMoved() && getPiece(0, move.startY).isValid(new Move(0, move.startY, 3, move.startY), this)) {
+                if (!getPiece(move.startX, move.startY).isValid(new Move(move.startX, move.startY, move.startX - 1, move.startY), this)) {
+                    return false;
+                }
+                newBoardArr[move.startY][move.startX - 1] = new King(currentSide);
+                newBoardArr[move.startY][move.startX] = new None();
+                Board newBoard = new Board(newBoardArr);
+                if (!newBoard.getPiece(move.startX - 1, move.startY).isValid(new Move(move.startX - 1, move.startY, move.endX, move.endY), newBoard)) {
+                    return false;
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        else {
+            throw new RuntimeException("Math doesn't work");
+        }
     }
 }
