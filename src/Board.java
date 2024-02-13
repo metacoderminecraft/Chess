@@ -170,12 +170,19 @@ public class Board {
 
     public ArrayList<Move> legalMoves(Side side) {
         ArrayList<Move> legalMoves = new ArrayList<>(); 
+        PieceSupplier[] promotionList = {s -> new Queen(s), s -> new Rook(s), s -> new Bishop(s), s -> new Knight(side)};
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 for (int i2 = 0; i2 < 8; i2++) {
                     for (int j2 = 0; j2 < 8; j2++) {
                         if (isValid(new Move(j, i, j2, i2), side)) {
                             legalMoves.add(new Move(j, i, j2, i2));
+                        }
+
+                        for (int a = 0; a < 4; a++) {
+                            if (isValid(new Promotion(j, i, j2, i2, promotionList[a]), side)) {
+                                legalMoves.add(new Promotion(j, i, j2, i2, promotionList[a]));
+                            }
                         }
                     }
                 }
