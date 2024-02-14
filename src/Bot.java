@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BotV1 implements Player {
+public class Bot implements Player {
     public final Side side;
 
-    public BotV1(Side side) {
+    public Bot(Side side) {
         this.side = side;
     }
 
