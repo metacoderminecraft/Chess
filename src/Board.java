@@ -143,9 +143,9 @@ public class Board {
 
         if (getPiece(move.startX, move.startY) instanceof Pawn) {
             if (move.endY - move.startY == 2) {
-                newBoardArr[move.endY - 1][move.startX] = new GhostPawn(currentSide);
+                newBoardArr[move.endY - 1][move.startX] = new GhostPawn();
             } else if (move.endY - move.startY == -2) {
-                newBoardArr[move.endY + 1][move.startX] = new GhostPawn(currentSide);
+                newBoardArr[move.endY + 1][move.startX] = new GhostPawn();
             }
             
             if (getPiece(move.endX, move.endY) instanceof GhostPawn && move.endY == 2) {
@@ -228,7 +228,7 @@ public class Board {
     }
 
     public boolean isValid(Move move, Side currentSide) {
-        if (move instanceof Board.Promotion && !(getPiece(move.startY, move.startX) instanceof Pawn)) {
+        if (move instanceof Board.Promotion && !(getPiece(move.startX, move.startY) instanceof Pawn)) {
             return false;
         }
 

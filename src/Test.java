@@ -8,7 +8,7 @@ public class Test {
         rookMove();
         kingMove();
         bishopMove();
-
+        promotionTest();
     }
 
     public static Board assertMove(Board.Move move, Side side, String tag, Board board) {
@@ -67,6 +67,7 @@ public class Test {
         Board board = new Board(Board.startBoard());
 
         board = assertMove(Human.moveOf("a7a5"), Side.BLACK, board);
+        System.out.println("marker");
         assertB(board.isValid(Human.moveOf("a8a6"), Side.BLACK));
     }
 
@@ -93,5 +94,13 @@ public class Test {
         assertB(!board.isValid(Human.moveOf("a5a4"), Side.BLACK));
         board = assertMove(Human.moveOf("b2b4"), Side.WHITE, board);
         assertB(board.isValid(Human.moveOf("a5b4"), Side.BLACK));
+    }
+
+    private static void promotionTest() {
+        Piece[][] boardArr = Board.noBoard();
+        boardArr[0][0] = new King(Side.BLACK);
+        boardArr[7][7] = new King(Side.WHITE);
+        boardArr[0][6] = new Pawn(Side.BLACK);
+        assertB(new Board(boardArr).isValid(new Board.Promotion(0, 6, 0, 7, s -> new Queen(s)), Side.BLACK), "alkfjalkds;fjd");
     }
 }
