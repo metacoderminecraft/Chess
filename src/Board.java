@@ -228,6 +228,10 @@ public class Board {
     }
 
     public boolean isValid(Move move, Side currentSide) {
+        if (move instanceof Board.Promotion && !(getPiece(move.startY, move.startX) instanceof Pawn)) {
+            return false;
+        }
+
         if (getPiece(move.startX, move.startY) instanceof King && !getPiece(move.startX, move.startY).hasMoved() && move.endY - move.startY == 0 && Math.abs(move.endX - move.startX) == 2) {
             if (castleValid(move, currentSide)) {
                 return true;
@@ -278,14 +282,14 @@ public class Board {
         //Kingside
         if (move.endX > move.startX) {
 
-            if (getPiece(7, move.startY) instanceof Rook && !getPiece(7, move.startY).hasMoved() && getPiece(7, move.startY).isValid(new Move(7, move.startY, 5, move.startY), this)) {
-                if (!getPiece(move.startX, move.startY).isValid(new Move(move.startX, move.startY, move.startX + 1, move.startY), this)) {
+            if (getPiece(7, move.startY) instanceof Rook && !getPiece(7, move.startY).hasMoved() && getPiece(7, move.startY).isValid(new Move(7, move.startY, 5, move.startY), this) && getPiece(5, move.startY) instanceof None) {
+                if (!isValid(new Move(move.startX, move.startY, move.startX + 1, move.startY), currentSide)) {
                     return false;
                 }
                 newBoardArr[move.startY][move.startX + 1] = new King(currentSide);
                 newBoardArr[move.startY][move.startX] = new None();
                 Board newBoard = new Board(newBoardArr);
-                if (!newBoard.getPiece(move.startX + 1, move.startY).isValid(new Move(move.startX + 1, move.startY, move.endX, move.endY), newBoard)) {
+                if (!newBoard.isValid(new Move(move.startX + 1, move.startY, 3, move.endY), currentSide) && getPiece(3, move.startY) instanceof None) {
                     return false;
                 }
                 return true;
@@ -297,14 +301,14 @@ public class Board {
         //Queenside
         else if (move.startX > move.endX) {
 
-            if (getPiece(0, move.startY) instanceof Rook && !getPiece(0, move.startY).hasMoved() && getPiece(0, move.startY).isValid(new Move(0, move.startY, 3, move.startY), this)) {
-                if (!getPiece(move.startX, move.startY).isValid(new Move(move.startX, move.startY, move.startX - 1, move.startY), this)) {
+            if (getPiece(0, move.startY) instanceof Rook && !getPiece(0, move.startY).hasMoved() && getPiece(0, move.startY).isValid(new Move(0, move.startY, move.startX, move.startY), this)) {
+                if (!isValid(new Move(move.startX, move.startY, move.startX - 1, move.startY), currentSide)) {
                     return false;
                 }
                 newBoardArr[move.startY][move.startX - 1] = new King(currentSide);
                 newBoardArr[move.startY][move.startX] = new None();
                 Board newBoard = new Board(newBoardArr);
-                if (!newBoard.getPiece(move.startX - 1, move.startY).isValid(new Move(move.startX - 1, move.startY, move.endX, move.endY), newBoard)) {
+                if (!newBoard.isValid(new Move(move.startX - 1, move.startY, move.endX, move.endY), currentSide)) {
                     return false;
                 }
                 return true;

@@ -12,6 +12,6 @@ public class GhostPawn extends None {
 
     @Override
     public String toString() {
-        return "NA";
+        return "  ";
     }
 }
