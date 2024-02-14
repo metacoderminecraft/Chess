@@ -23,7 +23,7 @@ public class Board {
         }
 
         public PieceSupplier getEndPiece(Board board) {
-            return (idc) -> board.getPiece(startX, startY);
+            return idc -> board.getPiece(startX, startY);
         }
     }
 
@@ -131,12 +131,31 @@ public class Board {
 
         for (int i = 0; i < 8; i++) {
             newBoardArr[i] = board[i].clone();
+            for (int j = 0; j < 8; j++) {
+                if (newBoardArr[i][j] instanceof GhostPawn) {
+                    newBoardArr[i][j] = new None();
+                }
+            }
         }
 
         newBoardArr[move.endY][move.endX] = endPiece;
         newBoardArr[move.startY][move.startX] = new None();
 
-        if (getPiece(move.startX, move.startY) instanceof King && !getPiece(move.startX, move.startY).hasMoved() && move.endY - move.startY == 0 && Math.abs(move.endX - move.startX) == 2) {
+        if (getPiece(move.startX, move.startY) instanceof Pawn) {
+            if (move.endY - move.startY == 2) {
+                newBoardArr[move.endY - 1][move.startX] = new GhostPawn(currentSide);
+            } else if (move.endY - move.startY == -2) {
+                newBoardArr[move.endY + 1][move.startX] = new GhostPawn(currentSide);
+            }
+            
+            if (getPiece(move.endX, move.endY) instanceof GhostPawn && move.endY == 2) {
+                newBoardArr[move.endY + 1][move.endX] = new None();
+            } else if (getPiece(move.endX, move.endY) instanceof GhostPawn && move.endY == 5) {
+                newBoardArr[move.endY - 1][move.endX] = new None();
+            }
+        }
+
+        else if (getPiece(move.startX, move.startY) instanceof King && !getPiece(move.startX, move.startY).hasMoved() && move.endY - move.startY == 0 && Math.abs(move.endX - move.startX) == 2) {
             //kingside
             if (move.endX > move.startX) {
                 newBoardArr[move.startY][move.startX + 1] = new Rook(currentSide);

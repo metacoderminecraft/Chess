@@ -26,13 +26,11 @@ public class Pawn implements Piece {
             }
         }
 
-        if (board.getPiece(move.endX, move.endY) instanceof King && move.startX == 6 && move.startY == 0) {
-            System.out.println(board.getPiece(move.endX, move.endY));
-        }
         if (board.getPiece(move.endX, move.endY).getSide() == side) {
             return false;
         }
         
+        //two space moves
         if (move.endY - move.startY != 1 && side == Side.BLACK) {
             if (!(move.endY - move.startY == 2 && move.startY == 1 && board.getPiece(move.startX, 2) instanceof None)) {
                 return false;
@@ -45,7 +43,7 @@ public class Pawn implements Piece {
 
         if (move.endX - move.startX == 0 && board.getPiece(move.endX, move.endY) instanceof None) {
             return true;
-        } else if (Math.abs(move.endX - move.startX) == 1 && !(board.getPiece(move.endX, move.endY) instanceof None)) {
+        } else if (Math.abs(move.endX - move.startX) == 1 && Math.abs(move.endY - move.startY) == 1 && (!(board.getPiece(move.endX, move.endY) instanceof None) || board.getPiece(move.endX, move.endY) instanceof GhostPawn)) {
             return true;
         }
 
