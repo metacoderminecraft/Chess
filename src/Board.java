@@ -25,6 +25,17 @@ public class Board {
         public PieceSupplier getEndPiece(Board board) {
             return idc -> board.getPiece(startX, startY);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Move)) {
+                return false;
+            }
+
+            Move move = (Move) obj;
+
+            return startX == move.startX && startY == move.startY && endX == move.endX && endY == move.endY;
+        }
     }
 
     public static class Promotion extends Move {
