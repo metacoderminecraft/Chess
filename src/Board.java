@@ -68,6 +68,25 @@ public class Board {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Board)) {
+            return false;
+        }
+
+        Board other = (Board) obj;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (!(getPiece(j, i).getClass() == other.getPiece(j, i).getClass())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public void print() {
         String block = "|----";
         System.out.println("  " + block + block + block + block + block + block + block + block +"|");

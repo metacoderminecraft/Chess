@@ -2,9 +2,12 @@ import java.util.ArrayList;
 
 public class Bot implements Player {
     public final Side side;
+    public final RepeatChecker repeatChecker;
 
     public Bot(Side side) {
         this.side = side;
+        repeatChecker = new RepeatChecker();
+        repeatChecker.addBoard(new Board(Board.startBoard()));
     }
 
     @Override
@@ -19,13 +22,15 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.Move move = lookAhead(board, 3, side).move();
+        repeatChecker.addBoard(board);
+
+        Board.Move move = lookAhead(board, 2, side).move();
         move.print();
     
         return move;
     }
     
-    public static Board.WrapperMove lookAhead(Board board, int depth, Side side) {
+    public Board.WrapperMove lookAhead(Board board, int depth, Side side) {
         ArrayList<Board.Move> myLegalMoves = board.legalMoves(side);
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
 
@@ -56,7 +61,7 @@ public class Bot implements Player {
         return new Board.WrapperMove(myLegalMoves.get(index), oppWorst.valuation() * -1);
     }
 
-    public static int getValuation(Board board, Side side) {
+    public int getValuation(Board board, Side side) {
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
 
         if (board.isCheck(side) && board.legalMoves(side).size() == 0) {
@@ -65,6 +70,10 @@ public class Bot implements Player {
 
         if (board.isCheck(otherSide) && board.legalMoves(otherSide).size() == 0) {
             return 1 * 10^6;
+        }
+
+        if (repeatChecker.isDraw()) {
+            return -100000000;
         }
 
         int valuation = 0;
