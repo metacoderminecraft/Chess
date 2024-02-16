@@ -107,14 +107,13 @@ public class Test {
 
     private static void testValuation() {
         Piece[][] board = Board.startBoard();
-        Bot bot = new Bot(Side.BLACK);
-        assertB(bot.getValuation(new Board(board)) == 0);
+        assertB(Bot.getValuation(new Board(board), Side.BLACK) == 0);
         board[1][0] = new None();
-        assertB(bot.getValuation(new Board(board)) == -1);
+        assertB(Bot.getValuation(new Board(board), Side.BLACK) == -1);
         board[7][7] = new None();
-        assertB(bot.getValuation(new Board(board)) == 4);
+        assertB(Bot.getValuation(new Board(board), Side.BLACK) == 4);
         board[7][7] = new Queen(Side.WHITE);
-        assertB(bot.getValuation(new Board(board)) == -5);
+        assertB(Bot.getValuation(new Board(board), Side.BLACK) == -5);
     }
 
     private static void testLookAhead() {
@@ -124,8 +123,7 @@ public class Test {
         board[0][1] = new Rook(Side.WHITE);
         board[7][3] = new King(Side.WHITE);
         board[7][7] = new King(Side.BLACK);
-        Bot bot = new Bot(Side.WHITE);
         
-        assertB(bot.lookAhead(new Board(board), depth).equals(new Board.Move(1, 0, 0, 0)));
+        assertB(Bot.lookAhead(new Board(board), depth, Side.WHITE).move().equals(new Board.Move(1, 0, 0, 0)));
     }
 }

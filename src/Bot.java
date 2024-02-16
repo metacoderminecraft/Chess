@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Bot implements Player {
     public final Side side;
@@ -20,37 +19,44 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        ArrayList<Board.Move> legalMoves = board.legalMoves(side);
-        Random rand = new Random();
-
-        return legalMoves.get(rand.nextInt(legalMoves.size()));
+        Board.Move move = lookAhead(board, 3, side).move();
+        move.print();
+    
+        return move;
     }
     
-    public Board.WrapperMove lookAhead(Board board, int depth) {
-        ArrayList<Board.Move> legalMoves = board.legalMoves(side);
+    public static Board.WrapperMove lookAhead(Board board, int depth, Side side) {
+        ArrayList<Board.Move> myLegalMoves = board.legalMoves(side);
+        Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
 
         if (depth == 1) {
-            int currMaxVal = -1 * 10^7;
-            int index = 0;
+            Board.WrapperMove currBest = new Board.WrapperMove(null, -1 * 10^7);
     
-            for (int i = 0; i < legalMoves.size(); i++) {
-                int newValuation = getValuation(board.movePiece(legalMoves.get(i), side));
-                if (newValuation > currMaxVal) {
-                    currMaxVal = newValuation;
-                    index = i;
+            for (int i = 0; i < myLegalMoves.size(); i++) {
+                int newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side), side);
+                if (newValuation > currBest.valuation()) {
+                    currBest = new Board.WrapperMove(myLegalMoves.get(i), newValuation);
                 }
             }
 
-            return new Board.WrapperMove(legalMoves.get(index), currMaxVal);
+            return currBest;
         }
 
-        Board.WrapperMove currBest = new Board.WrapperMove(null, -1 * 10^7);        
-        for (int i = 0; i < legalMoves.size(); i++) {
-            
+        Board.WrapperMove oppWorst = new Board.WrapperMove(null, 1 * 10^7);
+        int index = 0;
+
+        for (int i = 0; i < myLegalMoves.size(); i++) {
+            Board.WrapperMove curr = lookAhead(board.movePiece(myLegalMoves.get(i), side), depth - 1, otherSide);
+            if (curr.valuation() < oppWorst.valuation()) {
+                oppWorst = curr;
+                index = i;
+            }
         }
+        
+        return new Board.WrapperMove(myLegalMoves.get(index), oppWorst.valuation() * -1);
     }
 
-    public int getValuation(Board board) {
+    public static int getValuation(Board board, Side side) {
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
 
         if (board.isCheck(side) && board.legalMoves(side).size() == 0) {
@@ -64,14 +70,14 @@ public class Bot implements Player {
         int valuation = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                valuation += getPieceValues(board.getPiece(j, i), board);
+                valuation += getPieceValues(board.getPiece(j, i), board, side);
             }
         }
 
         return valuation;
     }
 
-    public int getPieceValues(Piece piece, Board board) {
+    public static int getPieceValues(Piece piece, Board board, Side side) {
         int scalar = piece.getSide() == side ? 1 : -1;
 
         if (piece instanceof Pawn) {
