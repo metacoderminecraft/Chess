@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Board {
     private final Piece[][] board;
 
-    // new HashMap<Integer, String>();
+    public static record WrapperMove(Move move, int valuation) {};
 
     public static class Move {
         public final int startX;

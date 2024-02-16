@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.CyclicBarrier;
 
 public class Bot implements Player {
     public final Side side;
@@ -28,22 +26,28 @@ public class Bot implements Player {
         return legalMoves.get(rand.nextInt(legalMoves.size()));
     }
     
-    public Board.Move lookAhead(Board board, int depth) {
+    public Board.WrapperMove lookAhead(Board board, int depth) {
         ArrayList<Board.Move> legalMoves = board.legalMoves(side);
 
-        int currMaxVal = -1 * 10^7;
-        int index = 0;
-
         if (depth == 1) {
+            int currMaxVal = -1 * 10^7;
+            int index = 0;
+    
             for (int i = 0; i < legalMoves.size(); i++) {
-                if (getValuation(board.movePiece(legalMoves.get(i), side)) > currMaxVal) {
-                    currMaxVal = getValuation(board.movePiece(legalMoves.get(i), side));
+                int newValuation = getValuation(board.movePiece(legalMoves.get(i), side));
+                if (newValuation > currMaxVal) {
+                    currMaxVal = newValuation;
                     index = i;
                 }
             }
+
+            return new Board.WrapperMove(legalMoves.get(index), currMaxVal);
         }
 
-        return legalMoves.get(index);
+        Board.WrapperMove currBest = new Board.WrapperMove(null, -1 * 10^7);        
+        for (int i = 0; i < legalMoves.size(); i++) {
+            
+        }
     }
 
     public int getValuation(Board board) {
@@ -80,7 +84,7 @@ public class Bot implements Player {
             return 9 * scalar;
         }
 
-        //King/None
+        //King or None
         return 0;
     }
 }
