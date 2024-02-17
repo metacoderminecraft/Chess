@@ -22,8 +22,6 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        repeatChecker.addBoard(board);
-
         Board.Move move = lookAhead(board, 2, side).move();
         move.print();
     
@@ -70,10 +68,6 @@ public class Bot implements Player {
 
         if (board.isCheck(otherSide) && board.legalMoves(otherSide).size() == 0) {
             return 1 * 10^6;
-        }
-
-        if (repeatChecker.isDraw()) {
-            return -100000000;
         }
 
         int valuation = 0;
