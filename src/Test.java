@@ -8,9 +8,10 @@ public class Test {
         rookMove();
         kingMove();
         bishopMove();
-        promotionTest();
-        testValuation();
-        testLookAhead();
+        promotion();
+        valuation();
+        lookAhead();
+        testCastle();
     }
 
     public static Board assertMove(Board.Move move, Side side, String tag, Board board) {
@@ -97,7 +98,7 @@ public class Test {
         assertB(board.isValid(Human.moveOf("a5b4"), Side.BLACK));
     }
 
-    private static void promotionTest() {
+    private static void promotion() {
         Piece[][] boardArr = Board.noBoard();
         boardArr[0][0] = new King(Side.BLACK);
         boardArr[7][7] = new King(Side.WHITE);
@@ -105,28 +106,37 @@ public class Test {
         assertB(new Board(boardArr).isValid(new Board.Promotion(0, 6, 0, 7, s -> new Queen(s)), Side.BLACK), "alkfjalkds;fjd");
     }
 
-    private static void testValuation() {
+    private static void valuation() {
         Piece[][] board = Board.startBoard();
-        Bot bot = new Bot(Side.BLACK);
-
-        assertB(bot.getValuation(new Board(board), Side.BLACK) == 0);
+        assertB(Bot.getValuation(new Board(board)) == 0);
         board[1][0] = new None();
-        assertB(bot.getValuation(new Board(board), Side.BLACK) == -1);
+        assertB(Bot.getValuation(new Board(board)) == 1);
         board[7][7] = new None();
-        assertB(bot.getValuation(new Board(board), Side.BLACK) == 4);
+        assertB(Bot.getValuation(new Board(board)) == -4);
         board[7][7] = new Queen(Side.WHITE);
-        assertB(bot.getValuation(new Board(board), Side.BLACK) == -5);
+        assertB(Bot.getValuation(new Board(board)) == 5);
     }
 
-    private static void testLookAhead() {
+    private static void lookAhead() {
         int depth = 1;
         Piece[][] board = Board.noBoard();
         board[0][0] = new Rook(Side.BLACK);
         board[0][1] = new Rook(Side.WHITE);
         board[7][3] = new King(Side.WHITE);
         board[7][7] = new King(Side.BLACK);
-        Bot bot = new Bot(Side.WHITE);
         
-        assertB(bot.lookAhead(new Board(board), depth, Side.WHITE).move().equals(new Board.Move(1, 0, 0, 0)));
+        assertB(Bot.lookAhead(new Board(board), depth, Side.WHITE).move().equals(new Board.Move(1, 0, 0, 0)));
+    }
+
+    private static void testCastle() {
+        Piece[][] boardArr = Board.noBoard();
+        boardArr[0][4] = new King(Side.BLACK, false);
+        boardArr[0][7] = new Rook(Side.BLACK, false);
+        boardArr[7][4] = new King(Side.WHITE, false);
+        boardArr[7][0] = new Rook(Side.WHITE, false);
+        
+        Board board1 = new Board(boardArr);
+        assertB(board1.isValid(Human.moveOf("e8g8"), Side.BLACK));
+        assertB(board1.isValid(Human.moveOf("e1c1"), Side.WHITE));
     }
 }

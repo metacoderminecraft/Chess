@@ -22,22 +22,24 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.Move move = lookAhead(board, 2, side).move();
-        move.print();
+        Board.WrapperMove move = lookAhead(board, 3, side);
+        move.move().print();
+        System.out.println(move.valuation());
     
-        return move;
+        return move.move();
     }
     
-    public Board.WrapperMove lookAhead(Board board, int depth, Side side) {
+    public static Board.WrapperMove lookAhead(Board board, int depth, Side side) {
         ArrayList<Board.Move> myLegalMoves = board.legalMoves(side);
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
+        int scalar = side == Side.WHITE ? 1 : -1;
 
         if (depth == 1) {
-            Board.WrapperMove currBest = new Board.WrapperMove(null, -1 * 10^7);
+            Board.WrapperMove currBest = new Board.WrapperMove(null, -scalar * 10^7);
     
             for (int i = 0; i < myLegalMoves.size(); i++) {
-                int newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side), side);
-                if (newValuation > currBest.valuation()) {
+                int newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side));
+                if (newValuation * scalar > currBest.valuation() * scalar) {
                     currBest = new Board.WrapperMove(myLegalMoves.get(i), newValuation);
                 }
             }
@@ -45,43 +47,41 @@ public class Bot implements Player {
             return currBest;
         }
 
-        Board.WrapperMove oppWorst = new Board.WrapperMove(null, 1 * 10^7);
+        Board.WrapperMove oppWorst = new Board.WrapperMove(null, -scalar * 10^7);
         int index = 0;
 
         for (int i = 0; i < myLegalMoves.size(); i++) {
             Board.WrapperMove curr = lookAhead(board.movePiece(myLegalMoves.get(i), side), depth - 1, otherSide);
-            if (curr.valuation() < oppWorst.valuation()) {
+            if (curr.valuation() * scalar > oppWorst.valuation() * scalar) {
                 oppWorst = curr;
                 index = i;
             }
         }
         
-        return new Board.WrapperMove(myLegalMoves.get(index), oppWorst.valuation() * -1);
+        return new Board.WrapperMove(myLegalMoves.get(index), oppWorst.valuation());
     }
 
-    public int getValuation(Board board, Side side) {
-        Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
-
-        if (board.isCheck(side) && board.legalMoves(side).size() == 0) {
+    public static int getValuation(Board board) {
+        if (board.isCheck(Side.WHITE) && board.legalMoves(Side.WHITE).size() == 0) {
             return -1 * 10^6;
         }
 
-        if (board.isCheck(otherSide) && board.legalMoves(otherSide).size() == 0) {
+        if (board.isCheck(Side.BLACK) && board.legalMoves(Side.BLACK).size() == 0) {
             return 1 * 10^6;
         }
 
         int valuation = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                valuation += getPieceValues(board.getPiece(j, i), board, side);
+                valuation += getPieceValue(board.getPiece(j, i));
             }
         }
 
         return valuation;
     }
 
-    public static int getPieceValues(Piece piece, Board board, Side side) {
-        int scalar = piece.getSide() == side ? 1 : -1;
+    public static int getPieceValue(Piece piece) {
+        int scalar = piece.getSide() == Side.WHITE ? 1 : -1;
 
         if (piece instanceof Pawn) {
             return 1 * scalar;

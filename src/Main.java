@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) {
         Player player1 = new Bot(Side.WHITE);
-        Player player2 = new Bot(Side.BLACK);
+        Player player2 = new Human(Side.BLACK);
 
         Player currPlayer = player1;
 
