@@ -125,7 +125,7 @@ public class Test {
         board[7][3] = new King(Side.WHITE);
         board[7][7] = new King(Side.BLACK);
         
-        assertB(Bot.lookAhead(new Board(board), depth, Side.WHITE).move().equals(new Board.Move(1, 0, 0, 0)));
+        assertB(Bot.lookAhead(new Board(board), depth, -1 * 10^7, 1 * 10^7, Side.WHITE).move().equals(new Board.Move(1, 0, 0, 0)));
     }
 
     private static void testCastle() {
