@@ -22,7 +22,7 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.WrapperMove move = lookAhead(board, 3, side);
+        Board.WrapperMove move = lookAhead(board, 4, side);
         move.move().print();
         System.out.println(move.valuation());
     
@@ -49,11 +49,28 @@ public class Bot implements Player {
 
         Board.WrapperMove oppWorst = new Board.WrapperMove(null, -scalar * 10^7);
         int index = 0;
+        ArrayList<Thread> threads = new ArrayList<>();
+        ArrayList<Board.WrapperMove> threadResponses = new ArrayList<>();
 
         for (int i = 0; i < myLegalMoves.size(); i++) {
-            Board.WrapperMove curr = lookAhead(board.movePiece(myLegalMoves.get(i), side), depth - 1, otherSide);
-            if (curr.valuation() * scalar > oppWorst.valuation() * scalar) {
-                oppWorst = curr;
+            int this_i = i;
+            Thread thread = new Thread(() -> threadResponses.add(lookAhead(board.movePiece(myLegalMoves.get(this_i), side), depth - 1, otherSide)), String.valueOf(i));
+            threads.add(thread);
+            thread.start();
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (Exception e) {
+                System.out.println("Thread " + thread.getName() + "with error " + e);
+            }
+        }
+
+
+        for (int i = 0; i < threadResponses.size(); i++) {
+            if (threadResponses.get(i).valuation() * scalar > oppWorst.valuation() * scalar) {
+                oppWorst = threadResponses.get(i);
                 index = i;
             }
         }
