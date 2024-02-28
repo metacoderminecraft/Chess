@@ -22,14 +22,14 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.WrapperMove move = lookAhead(board, 4, side);
+        Board.WrapperMove move = lookAhead(board, 5, -1 * 10^7, 1 * 10^7, side);
         move.move().print();
         System.out.println(move.valuation());
     
         return move.move();
     }
     
-    public static Board.WrapperMove lookAhead(Board board, int depth, Side side) {
+    public static Board.WrapperMove lookAhead(Board board, int depth, int alpha, int beta, Side side) {
         ArrayList<Board.Move> myLegalMoves = board.legalMoves(side);
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
         int scalar = side == Side.WHITE ? 1 : -1;
@@ -54,24 +54,32 @@ public class Bot implements Player {
 
         for (int i = 0; i < myLegalMoves.size(); i++) {
             int this_i = i;
-            Thread thread = new Thread(() -> threadResponses.add(lookAhead(board.movePiece(myLegalMoves.get(this_i), side), depth - 1, otherSide)), String.valueOf(i));
+            int this_alpha = alpha;
+            int this_beta = beta;
+            Thread thread = new Thread(() -> threadResponses.add(lookAhead(board.movePiece(myLegalMoves.get(this_i), side), depth - 1, this_alpha, this_beta, otherSide)), String.valueOf(i));
             threads.add(thread);
             thread.start();
-        }
-
-        for (Thread thread : threads) {
             try {
                 thread.join();
             } catch (Exception e) {
                 System.out.println("Thread " + thread.getName() + "with error " + e);
             }
-        }
 
+            int valuation = threadResponses.get(i).valuation();
 
-        for (int i = 0; i < threadResponses.size(); i++) {
-            if (threadResponses.get(i).valuation() * scalar > oppWorst.valuation() * scalar) {
+            if (valuation * scalar > oppWorst.valuation() * scalar) {
                 oppWorst = threadResponses.get(i);
                 index = i;
+            }
+            
+            if (side == Side.WHITE) {
+                alpha = Math.max(alpha, valuation);
+            } else {
+                beta = Math.min(beta, valuation);
+            }
+
+            if (beta <= alpha) {
+                break;
             }
         }
         
