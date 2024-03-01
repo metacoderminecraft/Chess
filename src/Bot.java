@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 
 public class Bot implements Player {
+    public final int depth;
     public final Side side;
-    public final RepeatChecker repeatChecker;
 
-    public Bot(Side side) {
+    public Bot(Side side, int depth) {
         this.side = side;
-        repeatChecker = new RepeatChecker();
-        repeatChecker.addBoard(new Board(Board.startBoard()));
+        this.depth = depth;
     }
 
     @Override
@@ -22,14 +21,15 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.WrapperMove move = lookAhead(board, 5, -1 * 10^7, 1 * 10^7, side);
+        Board.WrapperMove move = lookAhead(board, depth, -1 * 10^7, 1 * 10^7, side);
         move.move().print();
+        System.out.println("original board: " + getValuation(board));
         System.out.println(move.valuation());
     
         return move.move();
     }
     
-    public static Board.WrapperMove lookAhead(Board board, int depth, int alpha, int beta, Side side) {
+    public static Board.WrapperMove lookAhead(Board board, int depth, double alpha, double beta, Side side) {
         ArrayList<Board.Move> myLegalMoves = board.legalMoves(side);
         Side otherSide = side == Side.WHITE ? Side.BLACK : Side.WHITE;
         int scalar = side == Side.WHITE ? 1 : -1;
@@ -38,7 +38,7 @@ public class Bot implements Player {
             Board.WrapperMove currBest = new Board.WrapperMove(null, -scalar * 10^7);
     
             for (int i = 0; i < myLegalMoves.size(); i++) {
-                int newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side));
+                double newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side));
                 if (newValuation * scalar > currBest.valuation() * scalar) {
                     currBest = new Board.WrapperMove(myLegalMoves.get(i), newValuation);
                 }
@@ -49,33 +49,19 @@ public class Bot implements Player {
 
         Board.WrapperMove oppWorst = new Board.WrapperMove(null, -scalar * 10^7);
         int index = 0;
-        ArrayList<Thread> threads = new ArrayList<>();
-        ArrayList<Board.WrapperMove> threadResponses = new ArrayList<>();
 
-        for (int i = 0; i < myLegalMoves.size(); i++) {
-            int this_i = i;
-            int this_alpha = alpha;
-            int this_beta = beta;
-            Thread thread = new Thread(() -> threadResponses.add(lookAhead(board.movePiece(myLegalMoves.get(this_i), side), depth - 1, this_alpha, this_beta, otherSide)), String.valueOf(i));
-            threads.add(thread);
-            thread.start();
-            try {
-                thread.join();
-            } catch (Exception e) {
-                System.out.println("Thread " + thread.getName() + "with error " + e);
-            }
+        for (int i = 0; i< myLegalMoves.size(); i++) {
+            Board.WrapperMove curr = lookAhead(board.movePiece(myLegalMoves.get(i), side), depth - 1, alpha, beta, otherSide);
 
-            int valuation = threadResponses.get(i).valuation();
-
-            if (valuation * scalar > oppWorst.valuation() * scalar) {
-                oppWorst = threadResponses.get(i);
+            if (curr.valuation() * scalar > oppWorst.valuation() * scalar) {
+                oppWorst = curr;
                 index = i;
             }
             
             if (side == Side.WHITE) {
-                alpha = Math.max(alpha, valuation);
+                alpha = Math.max(alpha, curr.valuation());
             } else {
-                beta = Math.min(beta, valuation);
+                beta = Math.min(beta, curr.valuation());
             }
 
             if (beta <= alpha) {
@@ -86,7 +72,7 @@ public class Bot implements Player {
         return new Board.WrapperMove(myLegalMoves.get(index), oppWorst.valuation());
     }
 
-    public static int getValuation(Board board) {
+    public static double getValuation(Board board) {
         if (board.isCheck(Side.WHITE) && board.legalMoves(Side.WHITE).size() == 0) {
             return -1 * 10^6;
         }
@@ -95,27 +81,36 @@ public class Bot implements Player {
             return 1 * 10^6;
         }
 
-        int valuation = 0;
+        double valuation = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                valuation += getPieceValue(board.getPiece(j, i));
+                double piece_value = getPieceValue(board, new Board.Position(j, i));
+                valuation += piece_value;
             }
         }
 
         return valuation;
     }
 
-    public static int getPieceValue(Piece piece) {
-        int scalar = piece.getSide() == Side.WHITE ? 1 : -1;
+    public static double getPieceValue(Board board, Board.Position piecePosition) {
+        Piece piece = board.getPiece(piecePosition.x, piecePosition.y);
+        int scalar = 1;
+        
+        if (piece.getSide() == Side.BLACK) {
+            scalar = -1;
+            piecePosition = new Board.Position(7 - piecePosition.x, 7 - piecePosition.y);
+        }
 
         if (piece instanceof Pawn) {
-            return 1 * scalar;
-        } else if (piece instanceof Knight || piece instanceof Bishop) {
-            return 3 * scalar;
+            return scalar * (1 + ValuationConstants.whitePawnRewards[piecePosition.y][piecePosition.x]);
+        } else if (piece instanceof Knight) {
+            return scalar * (3 + ValuationConstants.whiteKnightRewards[piecePosition.y][piecePosition.x]);
+        } else if (piece instanceof Bishop) {
+            return scalar * (3 + 0);
         } else if (piece instanceof Rook) {
-            return 5 * scalar;
+            return scalar * (5 + 0);
         } else if (piece instanceof Queen) {
-            return 9 * scalar;
+            return scalar * (9 + 0);
         }
 
         //King or None

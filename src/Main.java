@@ -1,14 +1,11 @@
 public class Main {
     public static void main(String[] args) {
-        Player player1 = new Bot(Side.WHITE);
-        Player player2 = new Human(Side.BLACK);
+        Player player1 = new Bot(Side.WHITE, 1);
+        Player player2 = new Bot(Side.BLACK, 2);
 
         Player currPlayer = player1;
 
-        RepeatChecker repeatChecker = new RepeatChecker();
-
         Board board = new Board(Board.startBoard());
-        repeatChecker.addBoard(board);
 
         board.print();
 
@@ -17,12 +14,8 @@ public class Main {
 
             board = board.movePiece(currPlayer.getInput(board), currPlayer.getSide());
             board.print();
-            repeatChecker.addBoard(board);
 
-            if (repeatChecker.isDraw()) {
-                System.out.println("the most boring draw bro");
-                break;
-            } else if(board.legalMoves(otherPlayer.getSide()).size() == 0 && board.isCheck(otherPlayer.getSide())) {
+            if(board.legalMoves(otherPlayer.getSide()).size() == 0 && board.isCheck(otherPlayer.getSide())) {
                 System.out.println(currPlayer + " is the GOAT!");
                 break;
             } else if(board.isCheck(otherPlayer.getSide())) {

@@ -12,6 +12,7 @@ public class Test {
         valuation();
         lookAhead();
         testCastle();
+        pawnRewards();
     }
 
     public static Board assertMove(Board.Move move, Side side, String tag, Board board) {
@@ -138,5 +139,10 @@ public class Test {
         Board board1 = new Board(boardArr);
         assertB(board1.isValid(Human.moveOf("e8g8"), Side.BLACK));
         assertB(board1.isValid(Human.moveOf("e1c1"), Side.WHITE));
+    }
+
+    private static void pawnRewards() {
+        Board board = new Board(Board.startBoard());
+        assertB(Bot.getValuation(board) == 0);
     }
 }
