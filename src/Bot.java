@@ -6,6 +6,9 @@ public class Bot implements Player {
 
     public Bot(Side side, int depth) {
         this.side = side;
+        if (depth < 1) {
+            throw new RuntimeException("Invalid bot configuration!");
+        }
         this.depth = depth;
     }
 
@@ -21,7 +24,7 @@ public class Bot implements Player {
 
     @Override
     public Board.Move getInput(Board board) {
-        Board.WrapperMove move = lookAhead(board, depth, -1 * 10^7, 1 * 10^7, side);
+        Board.WrapperMove move = lookAhead(board, depth, -1 * Math.pow(10, 7), 1 * Math.pow(10, 7), side);
         move.move().print();
         System.out.println("original board: " + getValuation(board));
         System.out.println(move.valuation());
@@ -35,7 +38,7 @@ public class Bot implements Player {
         int scalar = side == Side.WHITE ? 1 : -1;
 
         if (depth == 1) {
-            Board.WrapperMove currBest = new Board.WrapperMove(null, -scalar * 10^7);
+            Board.WrapperMove currBest = new Board.WrapperMove(null, -scalar * (Math.pow(10, 7)));
     
             for (int i = 0; i < myLegalMoves.size(); i++) {
                 double newValuation = getValuation(board.movePiece(myLegalMoves.get(i), side));
@@ -47,7 +50,7 @@ public class Bot implements Player {
             return currBest;
         }
 
-        Board.WrapperMove oppWorst = new Board.WrapperMove(null, -scalar * 10^7);
+        Board.WrapperMove oppWorst = new Board.WrapperMove(null, -scalar * Math.pow(10, 7));
         int index = 0;
 
         for (int i = 0; i< myLegalMoves.size(); i++) {
@@ -111,9 +114,11 @@ public class Bot implements Player {
             return scalar * (5 + 0);
         } else if (piece instanceof Queen) {
             return scalar * (9 + 0);
+        } else if (piece instanceof King) {
+            return scalar * ValuationConstants.whiteKingRewards[piecePosition.y][piecePosition.x];
         }
 
-        //King or None
+        //None
         return 0;
     }
 }
